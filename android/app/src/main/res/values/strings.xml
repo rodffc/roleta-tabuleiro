@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Roleta de Tabuleiro</string>
+    <string name="title_activity_main">Roleta de Tabuleiro</string>
+    <string name="package_name">br.com.rodrigo.roletatabuleiro</string>
+    <string name="custom_url_scheme">br.com.rodrigo.roletatabuleiro</string>
+</resources>

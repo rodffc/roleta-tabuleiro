@@ -1,0 +1,528 @@
+{
+  "fonte": "Ludopedia (ludopedia.com.br)",
+  "consultado_em": "2026-05",
+  "observacao_nota": "nota_ludopedia = Nota Média (média real das avaliações). rank_ludopedia = posição no ranking geral de board games; null em expansões/itens ambíguos.",
+  "observacao_tempo": "tempo_min/tempo_max em minutos (faixa típica da caixa/BGG; a Ludopedia costuma listar um único valor de referência).",
+  "total": 25,
+  "jogos": [
+    {
+      "nome": "Hitster",
+      "busca": [
+        "hitster",
+        "música",
+        "timeline",
+        "party game"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Música",
+      "jogadores_min": 2,
+      "jogadores_max": 10,
+      "idade": "16+",
+      "tempo_min": 15,
+      "tempo_max": 30,
+      "ano": "2022",
+      "editora": "Galápagos / Jumbo",
+      "nota_ludopedia": 8.5,
+      "rank_ludopedia": 206,
+      "descricao": "Adivinhe o ano de lançamento das músicas (via QR/Spotify) e monte sua linha do tempo musical."
+    },
+    {
+      "nome": "Tapple",
+      "busca": [
+        "tapple",
+        "palavras",
+        "roda de letras"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Palavras",
+      "jogadores_min": 2,
+      "jogadores_max": 8,
+      "idade": "8+",
+      "tempo_min": 10,
+      "tempo_max": 20,
+      "ano": "2014",
+      "editora": "The OP Games",
+      "nota_ludopedia": 7.6,
+      "rank_ludopedia": 2071,
+      "descricao": "Em 10s diga uma palavra do tema começando por uma letra ainda livre na roda; rápido e frenético."
+    },
+    {
+      "nome": "Exploding Kittens",
+      "busca": [
+        "exploding kittens",
+        "gatinhos explosivos"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Cartas",
+      "jogadores_min": 2,
+      "jogadores_max": 5,
+      "idade": "7+",
+      "tempo_min": 15,
+      "tempo_max": 20,
+      "ano": "2015",
+      "editora": "Galápagos",
+      "nota_ludopedia": 7.8,
+      "rank_ludopedia": 568,
+      "descricao": "Roleta-russa com gatinhos: evite comprar o gatinho explosivo usando cartas de ação contra os outros."
+    },
+    {
+      "nome": "Ito",
+      "busca": [
+        "ito",
+        "cooperativo",
+        "números",
+        "ordenar"
+      ],
+      "tipo": "Base",
+      "estilo": "Cooperativo / Party",
+      "jogadores_min": 2,
+      "jogadores_max": 8,
+      "idade": "8+",
+      "tempo_min": 10,
+      "tempo_max": 30,
+      "ano": "2019",
+      "editora": "MeepleBR",
+      "nota_ludopedia": 8.0,
+      "rank_ludopedia": 439,
+      "descricao": "Coloquem as cartas numéricas em ordem crescente dando dicas temáticas, sem revelar o número."
+    },
+    {
+      "nome": "That's Not a Hat",
+      "busca": [
+        "thats not a hat",
+        "isso não é um chapéu",
+        "memória",
+        "blefe"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Memória / Blefe",
+      "jogadores_min": 3,
+      "jogadores_max": 8,
+      "idade": "8+",
+      "tempo_min": 10,
+      "tempo_max": 15,
+      "ano": "2023",
+      "editora": "Galápagos / Ravensburger",
+      "nota_ludopedia": 8.1,
+      "rank_ludopedia": 524,
+      "descricao": "Troquem 'presentes' virados para baixo lembrando o que é cada um — ou blefem para não levar ponto negativo."
+    },
+    {
+      "nome": "Dixit: Daydreams",
+      "busca": [
+        "dixit daydreams",
+        "expansão dixit",
+        "84 cartas"
+      ],
+      "tipo": "Expansão (de Dixit)",
+      "estilo": "Party / Criatividade",
+      "jogadores_min": 3,
+      "jogadores_max": 6,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 30,
+      "ano": "2014",
+      "editora": "Libellud",
+      "nota_ludopedia": null,
+      "rank_ludopedia": null,
+      "descricao": "Expansão de Dixit com 84 novas cartas ilustradas (arte de Franck Dion). Requer o jogo base Dixit."
+    },
+    {
+      "nome": "Detetive (Estrela)",
+      "busca": [
+        "detetive",
+        "estrela",
+        "clue",
+        "cluedo",
+        "investigação"
+      ],
+      "tipo": "Base",
+      "estilo": "Dedução / Investigação",
+      "jogadores_min": 2,
+      "jogadores_max": 6,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 60,
+      "ano": "clássico (Cluedo, 1949)",
+      "editora": "Estrela",
+      "nota_ludopedia": 6.4,
+      "rank_ludopedia": 3458,
+      "descricao": "Descubra o culpado, a arma e o local do crime eliminando possibilidades — o 'Clue' brasileiro."
+    },
+    {
+      "nome": "Jogo da Vida",
+      "busca": [
+        "jogo da vida",
+        "game of life",
+        "estrela"
+      ],
+      "tipo": "Base",
+      "estilo": "Família / Percurso",
+      "jogadores_min": 2,
+      "jogadores_max": 6,
+      "idade": "8+",
+      "tempo_min": 45,
+      "tempo_max": 60,
+      "ano": "1960 (original)",
+      "editora": "Estrela",
+      "nota_ludopedia": 5.2,
+      "rank_ludopedia": 4785,
+      "descricao": "Percorra a trilha da vida (faculdade, carreira, família) acumulando dinheiro até a aposentadoria."
+    },
+    {
+      "nome": "Trio",
+      "busca": [
+        "trio",
+        "cartas",
+        "família",
+        "trincas"
+      ],
+      "tipo": "Base",
+      "estilo": "Cartas / Família",
+      "jogadores_min": 2,
+      "jogadores_max": 6,
+      "idade": "8+",
+      "tempo_min": 15,
+      "tempo_max": 15,
+      "ano": "2023",
+      "editora": "PaperGames",
+      "nota_ludopedia": 8.6,
+      "rank_ludopedia": 79,
+      "descricao": "Forme trincas iguais revelando cartas das mãos e do centro; simples, tenso e rápido (Kaya Miyano)."
+    },
+    {
+      "nome": "The Mind",
+      "busca": [
+        "the mind",
+        "cooperativo",
+        "números",
+        "sem comunicação"
+      ],
+      "tipo": "Base",
+      "estilo": "Cooperativo / Cartas",
+      "jogadores_min": 2,
+      "jogadores_max": 4,
+      "idade": "8+",
+      "tempo_min": 15,
+      "tempo_max": 20,
+      "ano": "2018",
+      "editora": "Galápagos",
+      "nota_ludopedia": 7.3,
+      "rank_ludopedia": 1215,
+      "descricao": "Joguem cartas em ordem crescente sem se comunicar — pura sintonia e tensão crescente."
+    },
+    {
+      "nome": "Telma",
+      "busca": [
+        "telma",
+        "apelidos",
+        "memória",
+        "reação"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Memória / Reação",
+      "jogadores_min": 4,
+      "jogadores_max": 8,
+      "idade": "6+",
+      "tempo_min": 15,
+      "tempo_max": 20,
+      "ano": "2018",
+      "editora": "Devir / Tamanduá",
+      "nota_ludopedia": 7.4,
+      "rank_ludopedia": 1398,
+      "descricao": "Cada jogador tem um apelido; quando saem duas cartas iguais, grite o apelido do oponente primeiro."
+    },
+    {
+      "nome": "A Ilha Proibida",
+      "busca": [
+        "a ilha proibida",
+        "forbidden island",
+        "cooperativo"
+      ],
+      "tipo": "Base",
+      "estilo": "Cooperativo",
+      "jogadores_min": 2,
+      "jogadores_max": 4,
+      "idade": "10+",
+      "tempo_min": 30,
+      "tempo_max": 30,
+      "ano": "2010",
+      "editora": "Devir",
+      "nota_ludopedia": 7.4,
+      "rank_ludopedia": 991,
+      "descricao": "Cooperem para recuperar 4 tesouros e fugir antes da ilha afundar; clássico de entrada (Matt Leacock)."
+    },
+    {
+      "nome": "Harmonies",
+      "busca": [
+        "harmonies",
+        "libellud",
+        "paisagens",
+        "animais",
+        "abstrato"
+      ],
+      "tipo": "Base",
+      "estilo": "Família / Abstrato",
+      "jogadores_min": 1,
+      "jogadores_max": 4,
+      "idade": "10+",
+      "tempo_min": 30,
+      "tempo_max": 45,
+      "ano": "2024",
+      "editora": "Galápagos / Libellud",
+      "nota_ludopedia": 8.9,
+      "rank_ludopedia": 16,
+      "descricao": "Empilhe fichas coloridas formando habitats e atraia animais para pontuar; grande sucesso recente."
+    },
+    {
+      "nome": "Telestrations",
+      "busca": [
+        "telestrations",
+        "passa o desenho",
+        "desenho"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Desenho",
+      "jogadores_min": 4,
+      "jogadores_max": 8,
+      "idade": "10+",
+      "tempo_min": 30,
+      "tempo_max": 30,
+      "ano": "2009",
+      "editora": "Galápagos",
+      "nota_ludopedia": 8.3,
+      "rank_ludopedia": 256,
+      "descricao": "'Telefone sem fio' com desenhos: desenhe, passe, adivinhe — e ria do resultado final."
+    },
+    {
+      "nome": "Dixit",
+      "busca": [
+        "dixit",
+        "criatividade",
+        "dedução",
+        "imagens"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Criatividade",
+      "jogadores_min": 3,
+      "jogadores_max": 6,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 30,
+      "ano": "2008",
+      "editora": "Galápagos / Libellud",
+      "nota_ludopedia": 8.3,
+      "rank_ludopedia": 195,
+      "descricao": "Dê uma pista para sua carta ilustrada; os outros tentam adivinhar qual é — nem óbvia, nem impossível."
+    },
+    {
+      "nome": "Dixit: Quest",
+      "busca": [
+        "dixit quest",
+        "expansão dixit",
+        "84 cartas"
+      ],
+      "tipo": "Expansão (de Dixit)",
+      "estilo": "Party / Criatividade",
+      "jogadores_min": 3,
+      "jogadores_max": 6,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 30,
+      "ano": "2011",
+      "editora": "Libellud",
+      "nota_ludopedia": null,
+      "rank_ludopedia": null,
+      "descricao": "Expansão de Dixit com 84 novas cartas (arte de Marie Cardouat). Requer o jogo base Dixit."
+    },
+    {
+      "nome": "Mysterium",
+      "busca": [
+        "mysterium",
+        "fantasma",
+        "dedução",
+        "cooperativo"
+      ],
+      "tipo": "Base",
+      "estilo": "Cooperativo / Dedução",
+      "jogadores_min": 2,
+      "jogadores_max": 7,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 60,
+      "ano": "2015",
+      "editora": "Galápagos",
+      "nota_ludopedia": 7.9,
+      "rank_ludopedia": 492,
+      "descricao": "Um fantasma dá visões (cartas ilustradas) e os médiuns deduzem o culpado, a arma e o local."
+    },
+    {
+      "nome": "Carcassonne",
+      "busca": [
+        "carcassonne",
+        "tiles",
+        "meeples",
+        "colocação de peças"
+      ],
+      "tipo": "Base",
+      "estilo": "Família / Colocação de peças",
+      "jogadores_min": 2,
+      "jogadores_max": 5,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 45,
+      "ano": "2000",
+      "editora": "Devir",
+      "nota_ludopedia": 8.3,
+      "rank_ludopedia": 162,
+      "descricao": "Construa cidades, estradas e campos posicionando peças e meeples; clássico de entrada."
+    },
+    {
+      "nome": "Ticket to Ride: Europa",
+      "busca": [
+        "ticket to ride europa",
+        "europe",
+        "trens",
+        "rotas"
+      ],
+      "tipo": "Base",
+      "estilo": "Família / Rotas",
+      "jogadores_min": 2,
+      "jogadores_max": 5,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 60,
+      "ano": "2005",
+      "editora": "Galápagos",
+      "nota_ludopedia": 8.6,
+      "rank_ludopedia": 61,
+      "descricao": "Colete cartas e reivindique rotas de trem pela Europa (com túneis e estações) para completar bilhetes."
+    },
+    {
+      "nome": "Heat: Pedal to the Metal",
+      "busca": [
+        "heat",
+        "pedal to the metal",
+        "corrida",
+        "carros"
+      ],
+      "tipo": "Base",
+      "estilo": "Família+ / Corrida",
+      "jogadores_min": 1,
+      "jogadores_max": 6,
+      "idade": "10+",
+      "tempo_min": 30,
+      "tempo_max": 60,
+      "ano": "2022",
+      "editora": "Galápagos",
+      "nota_ludopedia": 8.8,
+      "rank_ludopedia": 40,
+      "descricao": "Corrida de carros com gestão de mão e do 'calor' do motor; tenso, elegante e com modo solo."
+    },
+    {
+      "nome": "Stop (clássico) / UeStop!",
+      "busca": [
+        "stop",
+        "adedonha",
+        "adedanha",
+        "categorias",
+        "uestop"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Palavras",
+      "jogadores_min": 2,
+      "jogadores_max": 8,
+      "idade": "6+",
+      "tempo_min": 15,
+      "tempo_max": 30,
+      "ano": "clássico",
+      "editora": "Estrela / Galápagos",
+      "nota_ludopedia": null,
+      "rank_ludopedia": null,
+      "descricao": "Categorias com uma letra sorteada (nome, animal, fruta...). Nome ambíguo: ver aba 'Notas'. UeStop! (Galápagos) tem nota 6.6 na Ludopedia."
+    },
+    {
+      "nome": "Imagem & Ação 2",
+      "busca": [
+        "imagem e ação 2",
+        "imagem & ação 2",
+        "desenho",
+        "mímica"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Desenho",
+      "jogadores_min": 4,
+      "jogadores_max": 16,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 60,
+      "ano": "déc. de 1990",
+      "editora": "Grow",
+      "nota_ludopedia": 7.3,
+      "rank_ludopedia": 1353,
+      "descricao": "Desenhe palavras e expressões para sua equipe adivinhar; sequência com +2.400 novos termos."
+    },
+    {
+      "nome": "Mega Senha 2.1",
+      "busca": [
+        "mega sena 2",
+        "mega senha 2",
+        "password",
+        "palavras"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Palavras",
+      "jogadores_min": 3,
+      "jogadores_max": 4,
+      "idade": "8+",
+      "tempo_min": 30,
+      "tempo_max": 60,
+      "ano": "2019",
+      "editora": "Estrela",
+      "nota_ludopedia": 7.1,
+      "rank_ludopedia": 3968,
+      "descricao": "Faça a dupla adivinhar a 'senha' por dicas de uma palavra. Assumido para 'mega sena 2' (ver aba 'Notas')."
+    },
+    {
+      "nome": "Taco Gato Cabra Queijo Pizza",
+      "busca": [
+        "taco gato pizza",
+        "taco cat goat cheese pizza",
+        "reação"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Reação",
+      "jogadores_min": 2,
+      "jogadores_max": 8,
+      "idade": "8+",
+      "tempo_min": 10,
+      "tempo_max": 15,
+      "ano": "2017",
+      "editora": "PaperGames",
+      "nota_ludopedia": 7.8,
+      "rank_ludopedia": 582,
+      "descricao": "Diga a sequência de palavras virando cartas; quando a carta bate com a palavra, mão na pilha primeiro!"
+    },
+    {
+      "nome": "Quem Foi?",
+      "busca": [
+        "quem foi",
+        "who did it",
+        "dedução",
+        "party"
+      ],
+      "tipo": "Base",
+      "estilo": "Party / Dedução",
+      "jogadores_min": 3,
+      "jogadores_max": 6,
+      "idade": "6+",
+      "tempo_min": 15,
+      "tempo_max": 20,
+      "ano": "2021",
+      "editora": "PaperGames",
+      "nota_ludopedia": 7.7,
+      "rank_ludopedia": 702,
+      "descricao": "Seu pet fez sujeira no tapete — jogue cartas e culpe os outros antes que sobrem dedos apontados para você."
+    }
+  ]
+}

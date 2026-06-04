@@ -1,0 +1,13 @@
+node_modules/
+dist/
+
+# Android / Gradle build artifacts (o projeto android/ em si é versionado)
+android/app/build/
+android/build/
+android/.gradle/
+android/capacitor-cordova-android-plugins/
+android/local.properties
+*.keystore
+
+.DS_Store
+*.log

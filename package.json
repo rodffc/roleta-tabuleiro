@@ -1,0 +1,27 @@
+{
+  "name": "roleta-tabuleiro",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "App para selecionar, filtrar e sortear meus jogos de tabuleiro (estilo Ludopedia).",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "enrich": "node scripts/enrich-images.mjs",
+    "sync": "vite build && cap sync android",
+    "android": "npm run sync && cap open android",
+    "apk": "npm run sync && cd android && (gradlew.bat assembleDebug || ./gradlew assembleDebug)"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.4.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2"
+  }
+}

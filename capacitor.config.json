@@ -1,0 +1,10 @@
+{
+  "appId": "br.com.rodrigo.roletatabuleiro",
+  "appName": "Roleta de Tabuleiro",
+  "webDir": "dist",
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
