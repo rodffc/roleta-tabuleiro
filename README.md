@@ -1,4 +1,4 @@
-# 🎲 Roleta de Tabuleiro
+# 🎲 Roleta dos jogos
 
 App web para selecionar, filtrar e sortear sua coleção de jogos de tabuleiro — visual inspirado na **Ludopedia** (verde + acento laranja, fontes Nunito/Open Sans).
 

@@ -8,7 +8,8 @@ import {
   formatPreco,
 } from '../lib/helpers.js'
 
-export default function GameDetailModal({ game, fav, vezesJogado, onClose, onToggleFav, onPlay, onEdit, onDelete }) {
+export default function GameDetailModal({ game, modo = 'colecao', fav, vezesJogado, onClose, onToggleFav, onPlay, onComprar, onEdit, onDelete }) {
+  const ehDesejo = modo === 'desejos'
   const [imgErro, setImgErro] = useState(false)
   const src = imgSrc(game.imageUrl)
   const mostraImg = src && !imgErro
@@ -25,7 +26,7 @@ export default function GameDetailModal({ game, fav, vezesJogado, onClose, onTog
     ['Nota Ludopedia', game.nota_ludopedia != null ? `★ ${Number(game.nota_ludopedia).toFixed(1)}` : null],
     ['Ranking Ludopedia', game.rank_ludopedia != null ? `#${game.rank_ludopedia}` : null],
     ['Preço médio', formatPreco(game.preco)],
-    ['Vezes jogado', vezesJogado > 0 ? `${vezesJogado}×` : 'nunca'],
+    ...(ehDesejo ? [] : [['Vezes jogado', vezesJogado > 0 ? `${vezesJogado}×` : 'nunca']]),
   ].filter(([, v]) => v != null && v !== '')
 
   return (
@@ -94,10 +95,16 @@ export default function GameDetailModal({ game, fav, vezesJogado, onClose, onTog
         </div>
 
         <div className="modal-foot" style={{ justifyContent: 'space-between' }}>
-          <button className="btn btn-danger btn-sm" onClick={() => onDelete(game)}>🗑 Excluir</button>
+          <button className="btn btn-danger btn-sm" onClick={() => onDelete(game)}>
+            {ehDesejo ? '🗑 Remover' : '🗑 Excluir'}
+          </button>
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn btn-outline btn-sm" onClick={() => onEdit(game)}>✎ Editar</button>
-            <button className="btn btn-green btn-sm" onClick={() => onPlay(game)}>🎲 Joguei</button>
+            {ehDesejo ? (
+              <button className="btn btn-green btn-sm" onClick={() => onComprar(game)}>✓ Comprei</button>
+            ) : (
+              <button className="btn btn-green btn-sm" onClick={() => onPlay(game)}>🎲 Joguei</button>
+            )}
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ const TIPOS = [
   { key: 'mecanicas', label: 'Mecânica' },
 ]
 
-export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
+export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onClose }) {
   const [tipo, setTipo] = useState('categorias')
   const [opcoes, setOpcoes] = useState([])
   const [id, setId] = useState('')
@@ -54,12 +54,13 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
     }
   }
 
-  async function adicionar(g) {
-    setAddingSlug(g.slug)
+  async function adicionar(g, destino) {
+    const add = destino === 'desejos' ? onAddDesejo : onAddColecao
+    setAddingSlug(g.slug + destino)
     try {
       const ex = await dadosPorSlug(g.slug) // enriquece com jogadores/tempo/idade/nota
       const idadeMin = ex.idade ? Number(String(ex.idade).match(/\d+/)?.[0]) : null
-      onAdd({
+      add({
         ...g,
         nome: ex.nome || g.nome,
         imageUrl: ex.imageUrl || g.imageUrl,
@@ -74,7 +75,7 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
         ludopediaUrl: ex.ludopediaUrl || g.ludopediaUrl,
       })
     } catch {
-      onAdd(g) // ao menos adiciona com os dados básicos
+      add(g) // ao menos adiciona com os dados básicos
     } finally {
       setAddingSlug(null)
     }
@@ -123,7 +124,8 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
               <h4 className="detail-section">{resultados.length} jogo(s) — {nomeFiltro}</h4>
               <div className="discover-list">
                 {resultados.map((g) => {
-                  const ja = jaNaColecao(g)
+                  const onde = ondeEsta(g)
+                  const ocupado = addingSlug === g.slug + 'colecao' || addingSlug === g.slug + 'desejos'
                   return (
                     <div className="discover-item" key={g.slug}>
                       {imgSrc(g.imageUrl) ? (
@@ -135,13 +137,30 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
                         <b>{g.nome}</b>
                         <span>{nomeFiltro}</span>
                       </div>
-                      <button
-                        className={'btn btn-sm ' + (ja ? 'btn-outline' : 'btn-green')}
-                        disabled={ja || addingSlug === g.slug}
-                        onClick={() => adicionar(g)}
-                      >
-                        {ja ? '✓ Na coleção' : addingSlug === g.slug ? '⏳…' : '➕ Adicionar'}
-                      </button>
+                      {onde ? (
+                        <span className="discover-status">
+                          {onde === 'desejos' ? '💖 Nos desejos' : '✓ Na coleção'}
+                        </span>
+                      ) : (
+                        <div className="discover-acoes">
+                          <button
+                            className="btn btn-sm btn-green"
+                            disabled={ocupado}
+                            onClick={() => adicionar(g, 'colecao')}
+                            title="Adicionar à coleção"
+                          >
+                            {addingSlug === g.slug + 'colecao' ? '⏳' : '➕ Coleção'}
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline"
+                            disabled={ocupado}
+                            onClick={() => adicionar(g, 'desejos')}
+                            title="Adicionar à lista de desejos"
+                          >
+                            {addingSlug === g.slug + 'desejos' ? '⏳' : '💖 Desejo'}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )
                 })}

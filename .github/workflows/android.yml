@@ -53,7 +53,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: app
-          name: Roleta de Tabuleiro — APK mais recente
+          name: Roleta dos jogos — APK mais recente
           body: |
             APK gerado automaticamente. Baixe o arquivo **roleta-tabuleiro.apk** abaixo
             e instale no celular (permita "fontes desconhecidas").

@@ -179,6 +179,43 @@ button {
   flex-wrap: wrap;
   margin-bottom: 14px;
 }
+
+/* ---------- Abas (coleção / desejos) ---------- */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.tab {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  color: var(--text-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-family: 'Nunito';
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.tab.active {
+  background: var(--green-light);
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+.tab-count {
+  background: var(--green);
+  color: #fff;
+  font-size: 0.74rem;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+.tab.active .tab-count {
+  background: var(--green-dark);
+}
 .toolbar .count {
   color: var(--text-soft);
   font-size: 0.9rem;
@@ -809,6 +846,27 @@ select {
 .discover-info span {
   font-size: 0.76rem;
   color: var(--text-soft);
+}
+.discover-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.discover-acoes .btn {
+  white-space: nowrap;
+}
+.discover-status {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--green-dark);
+  white-space: nowrap;
+}
+.icon-btn.comprar {
+  color: var(--green-dark);
+  font-weight: 800;
+}
+.icon-btn.comprar:hover {
+  background: var(--green-light);
 }
 
 /* ---------- Bottom navigation (rodapé fixo) ---------- */

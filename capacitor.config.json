@@ -1,6 +1,6 @@
 {
   "appId": "br.com.rodrigo.roletatabuleiro",
-  "appName": "Roleta de Tabuleiro",
+  "appName": "Roleta dos jogos",
   "webDir": "dist",
   "plugins": {
     "CapacitorHttp": {

@@ -8,7 +8,8 @@ import {
   formatPreco,
 } from '../lib/helpers.js'
 
-export default function GameCard({ game, fav, onToggleFav, onPlay, onEdit, onDelete, onOpen }) {
+export default function GameCard({ game, modo = 'colecao', fav, onToggleFav, onPlay, onComprar, onEdit, onDelete, onOpen }) {
+  const ehDesejo = modo === 'desejos'
   const [imgErro, setImgErro] = useState(false)
   const src = imgSrc(game.imageUrl)
   const mostraImg = src && !imgErro
@@ -68,13 +69,19 @@ export default function GameCard({ game, fav, onToggleFav, onPlay, onEdit, onDel
           )}
           {game.rank_ludopedia != null && <span className="rank">#{game.rank_ludopedia}</span>}
           <span className="spacer" />
-          <button className="icon-btn" onClick={semPropagar(() => onPlay(game))} title="Registrar partida">
-            🎲 Joguei
-          </button>
+          {ehDesejo ? (
+            <button className="icon-btn comprar" onClick={semPropagar(() => onComprar(game))} title="Marcar como comprado">
+              ✓ Comprei
+            </button>
+          ) : (
+            <button className="icon-btn" onClick={semPropagar(() => onPlay(game))} title="Registrar partida">
+              🎲 Joguei
+            </button>
+          )}
           <button className="icon-btn" onClick={semPropagar(() => onEdit(game))} title="Editar">
             ✎
           </button>
-          <button className="icon-btn del" onClick={semPropagar(() => onDelete(game))} title="Excluir">
+          <button className="icon-btn del" onClick={semPropagar(() => onDelete(game))} title={ehDesejo ? 'Remover dos desejos' : 'Excluir'}>
             🗑
           </button>
         </div>

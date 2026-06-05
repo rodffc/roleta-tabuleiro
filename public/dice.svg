@@ -6,9 +6,9 @@
   </linearGradient>
 </defs>
   <rect width="1024" height="1024" rx="225.28" fill="url(#bg)"/>
-  <g><path d="M512,512 L512.0,182.0 A330,330 0 0 1 745.3,278.7 Z" fill="#0a7d6e"/><path d="M512,512 L745.3,278.7 A330,330 0 0 1 842.0,512.0 Z" fill="#2e7d32"/><path d="M512,512 L842.0,512.0 A330,330 0 0 1 745.3,745.3 Z" fill="#1565c0"/><path d="M512,512 L745.3,745.3 A330,330 0 0 1 512.0,842.0 Z" fill="#6b3fa0"/><path d="M512,512 L512.0,842.0 A330,330 0 0 1 278.7,745.3 Z" fill="#c0392b"/><path d="M512,512 L278.7,745.3 A330,330 0 0 1 182.0,512.0 Z" fill="#d4860b"/><path d="M512,512 L182.0,512.0 A330,330 0 0 1 278.7,278.7 Z" fill="#00838f"/><path d="M512,512 L278.7,278.7 A330,330 0 0 1 512.0,182.0 Z" fill="#ad1457"/><circle cx="512" cy="512" r="330" fill="none" stroke="#ffffff" stroke-width="14"/></g>
+  <g><path d="M512,512 L512.0,42.0 A470,470 0 0 1 844.3,179.7 Z" fill="#0a7d6e"/><path d="M512,512 L844.3,179.7 A470,470 0 0 1 982.0,512.0 Z" fill="#2e7d32"/><path d="M512,512 L982.0,512.0 A470,470 0 0 1 844.3,844.3 Z" fill="#1565c0"/><path d="M512,512 L844.3,844.3 A470,470 0 0 1 512.0,982.0 Z" fill="#6b3fa0"/><path d="M512,512 L512.0,982.0 A470,470 0 0 1 179.7,844.3 Z" fill="#c0392b"/><path d="M512,512 L179.7,844.3 A470,470 0 0 1 42.0,512.0 Z" fill="#d4860b"/><path d="M512,512 L42.0,512.0 A470,470 0 0 1 179.7,179.7 Z" fill="#00838f"/><path d="M512,512 L179.7,179.7 A470,470 0 0 1 512.0,42.0 Z" fill="#ad1457"/><circle cx="512" cy="512" r="470" fill="none" stroke="#ffffff" stroke-width="14"/></g>
   <g transform="rotate(-12 512 512)">
-    <rect x="387" y="387" width="250" height="250" rx="50" fill="#ffffff"/>
-    <circle cx="447" cy="447" r="21.25" fill="#f4a23b"/><circle cx="577" cy="447" r="21.25" fill="#f4a23b"/><circle cx="512" cy="512" r="21.25" fill="#f4a23b"/><circle cx="447" cy="577" r="21.25" fill="#f4a23b"/><circle cx="577" cy="577" r="21.25" fill="#f4a23b"/>
+    <rect x="402" y="402" width="220" height="220" rx="44" fill="#ffffff"/>
+    <circle cx="454.8" cy="454.8" r="18.700000000000003" fill="#f4a23b"/><circle cx="569.2" cy="454.8" r="18.700000000000003" fill="#f4a23b"/><circle cx="512" cy="512" r="18.700000000000003" fill="#f4a23b"/><circle cx="454.8" cy="569.2" r="18.700000000000003" fill="#f4a23b"/><circle cx="569.2" cy="569.2" r="18.700000000000003" fill="#f4a23b"/>
   </g>
 </svg>

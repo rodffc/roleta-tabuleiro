@@ -7,6 +7,7 @@ const K_GAMES = 'rt_games_v1'
 const K_FAVS = 'rt_favs_v1'
 const K_HIST = 'rt_history_v1'
 const K_DELETED = 'rt_deleted_v1'
+const K_WISH = 'rt_wishlist_v1'
 
 function read(key, fallback) {
   try {
@@ -60,6 +61,9 @@ export const saveFavs = (favs) => write(K_FAVS, favs)
 
 export const loadHistory = () => read(K_HIST, [])
 export const saveHistory = (h) => write(K_HIST, h)
+
+export const loadWishlist = () => read(K_WISH, [])
+export const saveWishlist = (w) => write(K_WISH, w)
 
 // Marca um jogo como excluído para que não retorne do arquivo ao recarregar.
 export function markDeleted(id) {
@@ -118,17 +122,19 @@ export function exportData() {
     favs: read(K_FAVS, []),
     history: read(K_HIST, []),
     deleted: read(K_DELETED, []),
+    wishlist: read(K_WISH, []),
     token: getToken(),
   }
 }
 
 export function importData(obj) {
   if (!obj || obj.app !== 'roleta-tabuleiro' || !Array.isArray(obj.games)) {
-    throw new Error('Arquivo de backup inválido (não é um backup da Roleta de Tabuleiro).')
+    throw new Error('Arquivo de backup inválido (não é um backup da Roleta dos jogos).')
   }
   write(K_GAMES, obj.games)
   write(K_FAVS, Array.isArray(obj.favs) ? obj.favs : [])
   write(K_HIST, Array.isArray(obj.history) ? obj.history : [])
   write(K_DELETED, Array.isArray(obj.deleted) ? obj.deleted : [])
+  write(K_WISH, Array.isArray(obj.wishlist) ? obj.wishlist : [])
   if (obj.token) setToken(obj.token) // restaura o token da API da Ludopedia
 }

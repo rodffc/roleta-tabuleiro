@@ -16,6 +16,8 @@ import {
   saveFavs,
   loadHistory,
   saveHistory,
+  loadWishlist,
+  saveWishlist,
   resetGames,
   syncFromSeed,
   markDeleted,
@@ -34,6 +36,8 @@ export default function App() {
   const [games, setGames] = useState(loadGames)
   const [favs, setFavs] = useState(loadFavs)
   const [history, setHistory] = useState(loadHistory)
+  const [wishlist, setWishlist] = useState(loadWishlist)
+  const [aba, setAba] = useState('colecao') // 'colecao' | 'desejos'
 
   const [busca, setBusca] = useState('')
   const [ordem, setOrdem] = useState('nota')
@@ -51,8 +55,11 @@ export default function App() {
   useEffect(() => saveGames(games), [games])
   useEffect(() => saveFavs(favs), [favs])
   useEffect(() => saveHistory(history), [history])
+  useEffect(() => saveWishlist(wishlist), [wishlist])
 
-  const categorias = useMemo(() => todasCategorias(games), [games])
+  // lista exibida conforme a aba (coleção ou lista de desejos)
+  const listaBase = aba === 'desejos' ? wishlist : games
+  const categorias = useMemo(() => todasCategorias(listaBase), [listaBase])
 
   // contagem de partidas por jogo
   const vezesPorJogo = useMemo(() => {
@@ -64,7 +71,7 @@ export default function App() {
   // ---------- Filtragem + ordenação ----------
   const filtrados = useMemo(() => {
     const termo = busca.trim().toLowerCase()
-    let lista = games.filter((g) => {
+    let lista = listaBase.filter((g) => {
       if (termo) {
         const alvo = [g.nome, g.estilo, g.editora, ...(g.busca || [])]
           .filter(Boolean)
@@ -115,7 +122,7 @@ export default function App() {
       }
     })
     return lista
-  }, [games, busca, filtros, ordem, favs])
+  }, [listaBase, busca, filtros, ordem, favs])
 
   const filtrosAtivos =
     filtros.categorias.length > 0 ||
@@ -142,7 +149,19 @@ export default function App() {
     setPlayGame(null)
   }
 
+  const ehMesmoJogo = (a, b) =>
+    (a.ludopediaUrl && a.ludopediaUrl === b.ludopediaUrl) ||
+    a.nome.toLowerCase() === b.nome.toLowerCase()
+
   const excluirJogo = (game) => {
+    const naWish = wishlist.some((w) => w.id === game.id)
+    if (naWish) {
+      if (confirm(`Remover “${game.nome}” da lista de desejos?`)) {
+        setWishlist((w) => w.filter((g) => g.id !== game.id))
+        setDetailGame(null)
+      }
+      return
+    }
     if (confirm(`Excluir “${game.nome}” da sua coleção?`)) {
       markDeleted(game.id)
       setGames((gs) => gs.filter((g) => g.id !== game.id))
@@ -151,10 +170,22 @@ export default function App() {
   }
 
   const salvarJogo = (jogo, editando) => {
-    setGames((gs) => {
-      if (editando) return gs.map((g) => (g.id === jogo.id ? jogo : g))
-      if (gs.some((g) => g.id === jogo.id)) jogo.id = `${jogo.id}-${Date.now()}`
-      return [...gs, jogo]
+    const naWish = editando && wishlist.some((w) => w.id === jogo.id)
+    if (naWish) {
+      setWishlist((w) => w.map((g) => (g.id === jogo.id ? jogo : g)))
+      setFormGame(undefined)
+      return
+    }
+    if (editando) {
+      setGames((gs) => gs.map((g) => (g.id === jogo.id ? jogo : g)))
+      setFormGame(undefined)
+      return
+    }
+    // novo: vai para a lista da aba atual
+    const setLista = aba === 'desejos' ? setWishlist : setGames
+    setLista((lst) => {
+      if (lst.some((g) => g.id === jogo.id)) jogo.id = `${jogo.id}-${Date.now()}`
+      return [...lst, jogo]
     })
     setFormGame(undefined)
   }
@@ -164,28 +195,34 @@ export default function App() {
     setFormGame(game)
   }
 
-  // já existe na coleção? (por link da Ludopedia ou nome)
-  const jaNaColecao = (g) =>
-    games.some(
-      (x) =>
-        (g.ludopediaUrl && x.ludopediaUrl === g.ludopediaUrl) ||
-        x.nome.toLowerCase() === g.nome.toLowerCase(),
-    )
+  // já existe na coleção OU na lista de desejos?
+  const ondeEsta = (g) => {
+    if (games.some((x) => ehMesmoJogo(x, g))) return 'colecao'
+    if (wishlist.some((x) => ehMesmoJogo(x, g))) return 'desejos'
+    return null
+  }
+
+  const novoComId = (g, listaExistente) => {
+    let id = slug(g.nome) || `jogo-${Date.now()}`
+    if (listaExistente.some((x) => x.id === id)) id = `${id}-${Date.now()}`
+    return { ...g, id, busca: g.busca || [g.nome.toLowerCase()] }
+  }
 
   const adicionarDescoberto = (g) => {
-    setGames((gs) => {
-      if (
-        gs.some(
-          (x) =>
-            (g.ludopediaUrl && x.ludopediaUrl === g.ludopediaUrl) ||
-            x.nome.toLowerCase() === g.nome.toLowerCase(),
-        )
-      )
-        return gs
-      let id = slug(g.nome) || `jogo-${Date.now()}`
-      if (gs.some((x) => x.id === id)) id = `${id}-${Date.now()}`
-      return [...gs, { ...g, id, busca: [g.nome.toLowerCase()] }]
-    })
+    if (ondeEsta(g)) return
+    setGames((gs) => [...gs, novoComId(g, gs)])
+  }
+
+  const adicionarDesejo = (g) => {
+    if (ondeEsta(g)) return
+    setWishlist((w) => [...w, novoComId(g, w)])
+  }
+
+  // marca um item da lista de desejos como comprado: sai dos desejos, entra na coleção
+  const comprar = (game) => {
+    setWishlist((w) => w.filter((g) => g.id !== game.id))
+    setGames((gs) => (gs.some((x) => x.id === game.id) ? gs : [...gs, game]))
+    setDetailGame(null)
   }
 
   const restaurar = () => {
@@ -219,7 +256,7 @@ export default function App() {
           <div className="brand">
             <img src="/dice.svg" alt="" />
             <div>
-              Roleta de Tabuleiro
+              Roleta dos jogos
               <small>minha coleção · estilo Ludopedia</small>
             </div>
           </div>
@@ -239,6 +276,21 @@ export default function App() {
       </header>
 
       <main className="container has-bottom-nav">
+        <div className="tabs">
+          <button
+            className={'tab' + (aba === 'colecao' ? ' active' : '')}
+            onClick={() => setAba('colecao')}
+          >
+            🎲 Minha coleção <span className="tab-count">{games.length}</span>
+          </button>
+          <button
+            className={'tab' + (aba === 'desejos' ? ' active' : '')}
+            onClick={() => setAba('desejos')}
+          >
+            💖 Lista de desejos <span className="tab-count">{wishlist.length}</span>
+          </button>
+        </div>
+
         <div className="toolbar">
           <button
             className={'btn btn-sm ' + (mostraFiltros || filtrosAtivos ? 'btn-green' : 'btn-outline')}
@@ -257,7 +309,7 @@ export default function App() {
               <option value="ano">Ano (mais recente)</option>
             </select>
           </label>
-          <span className="count">{filtrados.length} de {games.length} jogos</span>
+          <span className="count">{filtrados.length} de {listaBase.length} jogos</span>
           <div style={{ flex: 1 }} />
           <button className="btn btn-sm btn-outline" onClick={() => setMostraBackup(true)} title="Salvar/restaurar seus dados">💾 Backup</button>
         </div>
@@ -273,11 +325,17 @@ export default function App() {
 
         {filtrados.length === 0 ? (
           <div className="empty">
-            <p style={{ fontSize: '2.4rem', margin: 0 }}>🎲</p>
-            <p>Nenhum jogo encontrado com esses filtros.</p>
-            <button className="btn btn-outline btn-sm" onClick={() => { setBusca(''); setFiltros(FILTROS_INICIAIS) }}>
-              Limpar tudo
-            </button>
+            <p style={{ fontSize: '2.4rem', margin: 0 }}>{aba === 'desejos' ? '💖' : '🎲'}</p>
+            <p>
+              {aba === 'desejos' && wishlist.length === 0
+                ? 'Sua lista de desejos está vazia. Use 🔎 Descobrir e toque em “💖 Desejo”.'
+                : 'Nenhum jogo encontrado com esses filtros.'}
+            </p>
+            {(busca || filtrosAtivos) && (
+              <button className="btn btn-outline btn-sm" onClick={() => { setBusca(''); setFiltros(FILTROS_INICIAIS) }}>
+                Limpar tudo
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid">
@@ -285,10 +343,12 @@ export default function App() {
               <GameCard
                 key={g.id}
                 game={g}
+                modo={aba}
                 fav={favs.includes(g.id)}
                 onOpen={setDetailGame}
                 onToggleFav={toggleFav}
                 onPlay={abrirRegistro}
+                onComprar={comprar}
                 onEdit={(game) => setFormGame(game)}
                 onDelete={excluirJogo}
               />
@@ -331,11 +391,13 @@ export default function App() {
       {detailGame && (
         <GameDetailModal
           game={detailGame}
+          modo={wishlist.some((w) => w.id === detailGame.id) ? 'desejos' : 'colecao'}
           fav={favs.includes(detailGame.id)}
           vezesJogado={vezesPorJogo[detailGame.id] || 0}
           onClose={() => setDetailGame(null)}
           onToggleFav={toggleFav}
           onPlay={abrirRegistro}
+          onComprar={comprar}
           onEdit={editarJogo}
           onDelete={excluirJogo}
         />
@@ -356,8 +418,9 @@ export default function App() {
       )}
       {mostraDescobrir && (
         <DiscoverModal
-          jaNaColecao={jaNaColecao}
-          onAdd={adicionarDescoberto}
+          ondeEsta={ondeEsta}
+          onAddColecao={adicionarDescoberto}
+          onAddDesejo={adicionarDesejo}
           onClose={() => setMostraDescobrir(false)}
         />
       )}
@@ -369,6 +432,7 @@ export default function App() {
             setGames(loadGames())
             setFavs(loadFavs())
             setHistory(loadHistory())
+            setWishlist(loadWishlist())
           }}
         />
       )}

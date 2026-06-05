@@ -61,20 +61,20 @@ const defs = `<defs>
   </linearGradient>
 </defs>`
 
-// Ícone completo (legado): fundo verde + roleta + dado
+// Ícone completo (legado): fundo verde + roleta GRANDE + dado
 const full = `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
   ${defs}
   <rect width="${S}" height="${S}" rx="${S * 0.22}" fill="url(#bg)"/>
-  ${wheel(330)}
-  ${die(250)}
+  ${wheel(470)}
+  ${die(220)}
 </svg>`
 
-// Foreground do ícone adaptativo (conteúdo dentro da zona segura ~66%)
+// Foreground do ícone adaptativo: roleta o maior possível dentro da zona segura.
 const fg = `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
   ${defs}
-  <g transform="translate(${cx} ${cy}) scale(0.62) translate(${-cx} ${-cy})">
-    ${wheel(330)}
-    ${die(250)}
+  <g transform="translate(${cx} ${cy}) scale(0.92) translate(${-cx} ${-cy})">
+    ${wheel(360)}
+    ${die(180)}
   </g>
 </svg>`
 
