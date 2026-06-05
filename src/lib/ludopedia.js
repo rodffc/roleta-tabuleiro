@@ -104,84 +104,72 @@ export const setToken = (t) => {
   }
 }
 
-function apiBase() {
-  if (typeof window === 'undefined' || isNative()) return `${SITE}/api/v1`
-  return '/lp/api/v1' // navegador: proxy do Vite
-}
+// ---------------- Descobrir jogos (sem token, via páginas do site) ----------------
+const SINGULAR = { categorias: 'categoria', temas: 'tema', mecanicas: 'mecanica' }
 
-async function apiGet(path, params = {}) {
-  const token = getToken()
-  if (!token) throw new Error('SEM_TOKEN')
-  const qs = new URLSearchParams()
-  for (const [k, v] of Object.entries(params)) {
-    if (v !== '' && v != null) qs.set(k, String(v))
+// Lista as opções de um filtro (categorias / temas / mecanicas) -> [{id, nome}].
+export async function listarFiltro(tipo) {
+  const singular = SINGULAR[tipo]
+  const html = await getText(`/${tipo}`)
+  const re = new RegExp(`/${singular}/(\\d+)">([^<]{1,60})<`, 'gi')
+  const out = []
+  const seen = new Set()
+  for (const m of html.matchAll(re)) {
+    if (seen.has(m[1])) continue
+    seen.add(m[1])
+    out.push({ id: m[1], nome: decode(m[2].trim()) })
   }
-  const url = `${apiBase()}${path}${qs.toString() ? `?${qs}` : ''}`
-  const res = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
-  })
-  if (res.status === 401) throw new Error('TOKEN_INVALIDO')
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.json()
+  return out.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
 }
 
-// Busca jogos na API oficial (filtros server-side: search, categoria, tema).
-export async function buscarJogosApi({ search = '', idCategoria = '', idTema = '', rows = 100, page = 1 } = {}) {
-  const data = await apiGet('/jogos', {
-    rows,
-    page,
-    search: search.trim(),
-    id_categoria: idCategoria,
-    id_tema: idTema,
-  })
-  return data.jogos || data || []
-}
-
-// Normaliza itens de listas de filtro vindas da API (categorias/temas).
-function normLista(arr, idKeys, nomeKeys) {
-  return (arr || [])
-    .map((o) => ({
-      id: idKeys.map((k) => o[k]).find((v) => v != null),
-      nome: nomeKeys.map((k) => o[k]).find((v) => v != null),
-    }))
-    .filter((o) => o.id != null && o.nome)
-    .sort((a, b) => String(a.nome).localeCompare(String(b.nome), 'pt-BR'))
-}
-
-export async function listarCategorias() {
-  const d = await apiGet('/categorias', { rows: 200 })
-  return normLista(d.categorias || d, ['id_categoria', 'id'], ['nm_categoria', 'nome'])
-}
-
-export async function listarTemas() {
-  const d = await apiGet('/temas', { rows: 200 })
-  return normLista(d.temas || d, ['id_tema', 'id'], ['nm_tema', 'nome'])
-}
-
-// Converte um jogo vindo da API para o formato da coleção do app.
-export function jogoApiParaColecao(j) {
-  const tp = String(j.tp_jogo || '').toLowerCase()
-  const ehExp = tp === 'e' || tp.includes('expan')
-  const idade = j.idade_minima ? `${j.idade_minima}+` : null
-  const tempo = j.vl_tempo_jogo != null ? Number(j.vl_tempo_jogo) : null
-  const cats = (j.categorias || []).map((c) => c.nm_categoria || c.nome).filter(Boolean)
-  return {
-    nome: j.nm_jogo || j.nome || 'Sem nome',
-    tipo: ehExp ? 'Expansão' : 'Base',
-    estilo: cats.slice(0, 3).join(' / '),
-    jogadores_min: j.qt_jogadores_min != null ? Number(j.qt_jogadores_min) : null,
-    jogadores_max: j.qt_jogadores_max != null ? Number(j.qt_jogadores_max) : null,
-    idade,
-    idade_min: j.idade_minima ? Number(j.idade_minima) : null,
-    tempo_min: tempo,
-    tempo_max: tempo,
-    ano: j.ano_publicacao ? String(j.ano_publicacao) : null,
-    imageUrl: j.thumb || null,
-    ludopediaUrl: j.link || null,
+// Extrai os jogos (capa + nome) de uma página de listagem do site.
+function parseListaJogos(html) {
+  const itens = []
+  const seen = new Set()
+  const reCapa = /\/jogo\/([a-z0-9-]+)">\s*<div class="div-capa[^"]*">\s*<img class="img-capa" src="([^"]+)"/gi
+  let m
+  while ((m = reCapa.exec(html))) {
+    if (seen.has(m[1])) continue
+    seen.add(m[1])
+    itens.push({ slug: m[1], cover: m[2] })
+  }
+  const nomes = {}
+  for (const n of html.matchAll(/\/jogo\/([a-z0-9-]+)"[^>]*>([^<]{2,70})<\/a>/gi)) {
+    if (!nomes[n[1]]) nomes[n[1]] = decode(n[2].trim())
+  }
+  return itens.map((it) => ({
+    slug: it.slug,
+    nome: nomes[it.slug] || it.slug,
+    tipo: 'Base',
+    estilo: '',
+    jogadores_min: null,
+    jogadores_max: null,
+    idade: null,
+    idade_min: null,
+    tempo_min: null,
+    tempo_max: null,
+    ano: null,
+    nota_ludopedia: null,
+    rank_ludopedia: null,
     descricao: '',
     preco: null,
+    imageUrl: it.cover.replace(/_[a-z]\.(jpg|jpeg|png|webp)/i, '.$1'),
+    ludopediaUrl: `${SITE}/jogo/${it.slug}`,
     bggId: null,
-  }
+  }))
+}
+
+// Lista os jogos de uma categoria / tema / mecânica.
+export async function descobrirJogos(tipo, id) {
+  const singular = SINGULAR[tipo]
+  const html = await getText(`/${singular}/${id}`)
+  return parseListaJogos(html)
+}
+
+// Busca os dados completos de um jogo pela sua slug (para enriquecer ao adicionar).
+export async function dadosPorSlug(slug) {
+  const raw = await getText(`/jogo/${slug}`)
+  return parse(raw, slug)
 }
 
 // Retorna os dados do 1º resultado da busca, ou null se não encontrar.
