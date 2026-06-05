@@ -27,7 +27,8 @@
       "descricao": "Adivinhe o ano de lançamento das músicas (via QR/Spotify) e monte sua linha do tempo musical.",
       "imageUrl": "capas/hitster.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/hitster"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/hitster",
+      "preco": 185.36
     },
     {
       "id": "tapple",
@@ -52,7 +53,8 @@
       "descricao": "Em 10s diga uma palavra do tema começando por uma letra ainda livre na roda; rápido e frenético.",
       "imageUrl": "capas/tapple.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/tapple"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/tapple",
+      "preco": null
     },
     {
       "id": "exploding-kittens",
@@ -76,7 +78,8 @@
       "descricao": "Roleta-russa com gatinhos: evite comprar o gatinho explosivo usando cartas de ação contra os outros.",
       "imageUrl": "capas/exploding-kittens.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/exploding-kittens"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/exploding-kittens",
+      "preco": 98
     },
     {
       "id": "ito",
@@ -102,7 +105,8 @@
       "descricao": "Coloquem as cartas numéricas em ordem crescente dando dicas temáticas, sem revelar o número.",
       "imageUrl": "capas/ito.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/ito"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/ito",
+      "preco": 97.05
     },
     {
       "id": "that-s-not-a-hat",
@@ -128,7 +132,8 @@
       "descricao": "Troquem 'presentes' virados para baixo lembrando o que é cada um — ou blefem para não levar ponto negativo.",
       "imageUrl": "capas/that-s-not-a-hat.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/that-s-not-a-hat"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/that-s-not-a-hat",
+      "preco": 102.75
     },
     {
       "id": "dixit-daydreams",
@@ -153,7 +158,8 @@
       "descricao": "Expansão de Dixit com 84 novas cartas ilustradas (arte de Franck Dion). Requer o jogo base Dixit.",
       "imageUrl": "capas/dixit-daydreams.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit-daydreams"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit-daydreams",
+      "preco": 143.6
     },
     {
       "id": "detetive-estrela",
@@ -180,7 +186,8 @@
       "descricao": "Descubra o culpado, a arma e o local do crime eliminando possibilidades — o 'Clue' brasileiro.",
       "imageUrl": "capas/detetive-estrela.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/detetive"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/detetive",
+      "preco": 60
     },
     {
       "id": "jogo-da-vida",
@@ -205,7 +212,8 @@
       "descricao": "Percorra a trilha da vida (faculdade, carreira, família) acumulando dinheiro até a aposentadoria.",
       "imageUrl": "capas/jogo-da-vida.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/super-jogo-da-vida"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/super-jogo-da-vida",
+      "preco": null
     },
     {
       "id": "trio",
@@ -231,7 +239,8 @@
       "descricao": "Forme trincas iguais revelando cartas das mãos e do centro; simples, tenso e rápido (Kaya Miyano).",
       "imageUrl": "capas/trio.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/trio"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/trio",
+      "preco": 61.56
     },
     {
       "id": "the-mind",
@@ -257,7 +266,8 @@
       "descricao": "Joguem cartas em ordem crescente sem se comunicar — pura sintonia e tensão crescente.",
       "imageUrl": "capas/the-mind.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/the-mind"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/the-mind",
+      "preco": 70.94
     },
     {
       "id": "telma",
@@ -283,7 +293,8 @@
       "descricao": "Cada jogador tem um apelido; quando saem duas cartas iguais, grite o apelido do oponente primeiro.",
       "imageUrl": "capas/telma.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/telma"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/telma",
+      "preco": null
     },
     {
       "id": "a-ilha-proibida",
@@ -308,7 +319,8 @@
       "descricao": "Cooperem para recuperar 4 tesouros e fugir antes da ilha afundar; clássico de entrada (Matt Leacock).",
       "imageUrl": "capas/a-ilha-proibida.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/forbidden-island"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/forbidden-island",
+      "preco": 202.5
     },
     {
       "id": "harmonies",
@@ -335,7 +347,8 @@
       "descricao": "Empilhe fichas coloridas formando habitats e atraia animais para pontuar; grande sucesso recente.",
       "imageUrl": "capas/harmonies.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/harmonies"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/harmonies",
+      "preco": 147.83
     },
     {
       "id": "telestrations",
@@ -360,7 +373,8 @@
       "descricao": "'Telefone sem fio' com desenhos: desenhe, passe, adivinhe — e ria do resultado final.",
       "imageUrl": "capas/telestrations.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/telestrations-passa-o-desenho"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/telestrations-passa-o-desenho",
+      "preco": 240.02
     },
     {
       "id": "dixit",
@@ -386,7 +400,8 @@
       "descricao": "Dê uma pista para sua carta ilustrada; os outros tentam adivinhar qual é — nem óbvia, nem impossível.",
       "imageUrl": "capas/dixit.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit",
+      "preco": 265.68
     },
     {
       "id": "dixit-quest",
@@ -411,7 +426,8 @@
       "descricao": "Expansão de Dixit com 84 novas cartas (arte de Marie Cardouat). Requer o jogo base Dixit.",
       "imageUrl": "capas/dixit-quest.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit-quest"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit-quest",
+      "preco": 173.9
     },
     {
       "id": "mysterium",
@@ -437,7 +453,8 @@
       "descricao": "Um fantasma dá visões (cartas ilustradas) e os médiuns deduzem o culpado, a arma e o local.",
       "imageUrl": "capas/mysterium.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/mysterium"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/mysterium",
+      "preco": 322.14
     },
     {
       "id": "carcassonne",
@@ -463,7 +480,8 @@
       "descricao": "Construa cidades, estradas e campos posicionando peças e meeples; clássico de entrada.",
       "imageUrl": "capas/carcassonne.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/carcassonne"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/carcassonne",
+      "preco": 240.4
     },
     {
       "id": "ticket-to-ride-europa",
@@ -489,7 +507,8 @@
       "descricao": "Colete cartas e reivindique rotas de trem pela Europa (com túneis e estações) para completar bilhetes.",
       "imageUrl": "capas/ticket-to-ride-europa.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/ticket-to-ride-europe"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/ticket-to-ride-europe",
+      "preco": 416.73
     },
     {
       "id": "heat-pedal-to-the-metal",
@@ -515,7 +534,8 @@
       "descricao": "Corrida de carros com gestão de mão e do 'calor' do motor; tenso, elegante e com modo solo.",
       "imageUrl": "capas/heat-pedal-to-the-metal.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/heat-pedal-to-the-metal"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/heat-pedal-to-the-metal",
+      "preco": 434.81
     },
     {
       "id": "stop-classico-uestop",
@@ -542,7 +562,8 @@
       "descricao": "Categorias com uma letra sorteada (nome, animal, fruta...). Nome ambíguo: ver aba 'Notas'. UeStop! (Galápagos) tem nota 6.6 na Ludopedia.",
       "imageUrl": "capas/stop-classico-uestop.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/uestop"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/uestop",
+      "preco": 62.99
     },
     {
       "id": "imagem-acao-2",
@@ -568,7 +589,8 @@
       "descricao": "Desenhe palavras e expressões para sua equipe adivinhar; sequência com +2.400 novos termos.",
       "imageUrl": "capas/imagem-acao-2.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/imagem-acao-2"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/imagem-acao-2",
+      "preco": null
     },
     {
       "id": "mega-senha-2-1",
@@ -594,7 +616,8 @@
       "descricao": "Faça a dupla adivinhar a 'senha' por dicas de uma palavra. Assumido para 'mega sena 2' (ver aba 'Notas').",
       "imageUrl": "capas/mega-senha-2-1.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/mega-senha-2-1"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/mega-senha-2-1",
+      "preco": null
     },
     {
       "id": "taco-gato-cabra-queijo-pizza",
@@ -619,7 +642,8 @@
       "descricao": "Diga a sequência de palavras virando cartas; quando a carta bate com a palavra, mão na pilha primeiro!",
       "imageUrl": "capas/taco-gato-cabra-queijo-pizza.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/taco-cat-goat-cheese-pizza"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/taco-cat-goat-cheese-pizza",
+      "preco": 59.9
     },
     {
       "id": "quem-foi",
@@ -645,7 +669,8 @@
       "descricao": "Seu pet fez sujeira no tapete — jogue cartas e culpe os outros antes que sobrem dedos apontados para você.",
       "imageUrl": "capas/quem-foi.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/who-did-it"
+      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/who-did-it",
+      "preco": 62
     },
     {
       "id": "fantasy-realms",
@@ -671,7 +696,8 @@
       "descricao": "Monte a melhor mão de 7 cartas combinando bônus e penalidades entre elas; pequeno, rápido e muito combinatório.",
       "imageUrl": "capas/fantasy-realms.jpg",
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/fantasy-realms",
-      "bggId": null
+      "bggId": null,
+      "preco": 61.11
     }
   ],
   "atualizado_em": "2026-05-31T13:10:51.407Z"

@@ -18,6 +18,7 @@ const vazio = {
   descricao: '',
   imageUrl: '',
   ludopediaUrl: '',
+  preco: '',
 }
 
 export default function GameFormModal({ game, onClose, onSave }) {
@@ -91,6 +92,7 @@ export default function GameFormModal({ game, onClose, onSave }) {
       descricao: f.descricao.trim(),
       imageUrl: f.imageUrl.trim() || null,
       ludopediaUrl: f.ludopediaUrl.trim() || game?.ludopediaUrl || null,
+      preco: num(f.preco),
       bggId: game?.bggId || null,
     }
     onSave(salvo, editando)
@@ -192,6 +194,17 @@ export default function GameFormModal({ game, onClose, onSave }) {
                 <label>Rank Ludopedia</label>
                 <input type="number" min="1" value={f.rank_ludopedia} onChange={set('rank_ludopedia')} />
               </div>
+            </div>
+            <div className="form-row">
+              <label>Preço médio (R$)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={f.preco}
+                onChange={set('preco')}
+                placeholder="ex: 199.90"
+              />
             </div>
             <div className="form-row">
               <label>URL da imagem (opcional)</label>

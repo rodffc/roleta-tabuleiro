@@ -7,7 +7,7 @@ import HistoryModal from './components/HistoryModal.jsx'
 import GameDetailModal from './components/GameDetailModal.jsx'
 import PlayLogModal from './components/PlayLogModal.jsx'
 import BackupModal from './components/BackupModal.jsx'
-import { categoriasDe, todasCategorias } from './lib/helpers.js'
+import { categoriasDe, todasCategorias, anoNum } from './lib/helpers.js'
 import {
   loadGames,
   saveGames,
@@ -103,6 +103,10 @@ export default function App() {
           return (a.rank_ludopedia ?? 1e9) - (b.rank_ludopedia ?? 1e9)
         case 'tempo':
           return (a.tempo_min ?? 1e9) - (b.tempo_min ?? 1e9)
+        case 'preco':
+          return (a.preco ?? Infinity) - (b.preco ?? Infinity)
+        case 'ano':
+          return (anoNum(b.ano) ?? -Infinity) - (anoNum(a.ano) ?? -Infinity)
         case 'nota':
         default:
           return (b.nota_ludopedia ?? -1) - (a.nota_ludopedia ?? -1)
@@ -205,11 +209,10 @@ export default function App() {
               onChange={(e) => setBusca(e.target.value)}
             />
           </div>
-          <button className="btn btn-orange" onClick={abrirRoleta}>🎡 Roleta</button>
         </div>
       </header>
 
-      <main className="container">
+      <main className="container has-bottom-nav">
         <div className="toolbar">
           <button
             className={'btn btn-sm ' + (mostraFiltros || filtrosAtivos ? 'btn-green' : 'btn-outline')}
@@ -224,16 +227,13 @@ export default function App() {
               <option value="rank">Ranking Ludopedia</option>
               <option value="nome">Nome (A–Z)</option>
               <option value="tempo">Duração (menor)</option>
+              <option value="preco">Preço (menor)</option>
+              <option value="ano">Ano (mais recente)</option>
             </select>
           </label>
           <span className="count">{filtrados.length} de {games.length} jogos</span>
           <div style={{ flex: 1 }} />
-          <button className="btn btn-sm btn-outline" onClick={atualizarDados} title="Atualizar capas, notas e ranking a partir do arquivo de dados">
-            🔄 Atualizar
-          </button>
-          <button className="btn btn-sm btn-outline" onClick={() => setMostraHist(true)}>📜 Histórico</button>
           <button className="btn btn-sm btn-outline" onClick={() => setMostraBackup(true)} title="Salvar/restaurar seus dados">💾 Backup</button>
-          <button className="btn btn-sm btn-green" onClick={() => setFormGame(null)}>+ Adicionar</button>
         </div>
 
         {mostraFiltros && (
@@ -275,6 +275,25 @@ export default function App() {
           <button className="icon-btn" onClick={restaurar}>restaurar coleção original</button>
         </footer>
       </main>
+
+      <nav className="bottom-nav">
+        <button onClick={() => setFormGame(null)}>
+          <span className="ico">➕</span>
+          Novo
+        </button>
+        <button onClick={() => setMostraHist(true)}>
+          <span className="ico">📜</span>
+          Histórico
+        </button>
+        <button className="destaque" onClick={abrirRoleta}>
+          <span className="ico">🎡</span>
+          Roleta
+        </button>
+        <button onClick={atualizarDados} title="Atualizar capas, notas e ranking">
+          <span className="ico">🔄</span>
+          Atualizar
+        </button>
+      </nav>
 
       {roleta && (
         <RouletteModal pool={filtrados} onClose={() => setRoleta(false)} onPlay={abrirRegistro} />

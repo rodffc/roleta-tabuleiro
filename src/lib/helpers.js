@@ -50,6 +50,20 @@ export function formatTempo(g) {
   return `${g.tempo_min ?? '?'}–${g.tempo_max ?? '?'} min`
 }
 
+// Extrai o ano (4 dígitos) de strings como "2022", "1960 (original)", "déc. de 1990".
+export function anoNum(ano) {
+  if (ano == null) return null
+  const m = String(ano).match(/(\d{4})/)
+  return m ? Number(m[1]) : null
+}
+
+export function formatPreco(v) {
+  if (v == null || v === '') return null
+  const n = Number(v)
+  if (Number.isNaN(n)) return null
+  return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+}
+
 export function formatData(iso) {
   const d = new Date(iso)
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })

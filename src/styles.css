@@ -530,6 +530,9 @@ select {
   border-radius: 18px;
   width: 100%;
   max-width: 460px;
+  max-height: 92dvh;
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   animation: pop 0.25s ease;
@@ -570,8 +573,14 @@ select {
 }
 .modal-body {
   padding: 20px;
-  max-height: 70vh;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.modal-head,
+.modal-foot {
+  flex-shrink: 0;
 }
 .form-row {
   margin-bottom: 12px;
@@ -730,6 +739,74 @@ select {
   border-radius: 8px;
 }
 
+.preco {
+  color: var(--orange-dark);
+  font-weight: 700;
+}
+
+/* ---------- Bottom navigation (rodapé fixo) ---------- */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 4px;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 18px rgba(10, 60, 50, 0.1);
+}
+.bottom-nav button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-family: 'Nunito';
+  font-weight: 800;
+  font-size: 0.72rem;
+  color: var(--green-dark);
+  transition: background 0.12s ease, transform 0.08s ease;
+}
+.bottom-nav button:active {
+  transform: scale(0.94);
+}
+.bottom-nav button .ico {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+.bottom-nav button:hover {
+  background: var(--green-light);
+}
+.bottom-nav button.destaque {
+  color: var(--orange-dark);
+}
+.bottom-nav button.destaque .ico {
+  background: var(--orange);
+  color: #3a2400;
+  width: 46px;
+  height: 46px;
+  margin-top: -16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(244, 162, 59, 0.5);
+  border: 3px solid #fff;
+}
+/* espaço para o conteúdo não ficar atrás da barra */
+.has-bottom-nav {
+  padding-bottom: 92px;
+}
+
 @media (max-width: 540px) {
   .brand small {
     display: none;
@@ -739,5 +816,13 @@ select {
   }
   .form-two {
     grid-template-columns: 1fr;
+  }
+  .detail-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .detail-info {
+    width: 100%;
   }
 }

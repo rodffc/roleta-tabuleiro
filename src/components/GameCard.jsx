@@ -5,6 +5,7 @@ import {
   imgSrc,
   formatJogadores,
   formatTempo,
+  formatPreco,
 } from '../lib/helpers.js'
 
 export default function GameCard({ game, fav, onToggleFav, onPlay, onEdit, onDelete, onOpen }) {
@@ -52,6 +53,9 @@ export default function GameCard({ game, fav, onToggleFav, onPlay, onEdit, onDel
           <span title="Duração">⏱ {formatTempo(game)}</span>
           {game.idade && <span title="Idade">🔞 {game.idade}</span>}
           {game.ano && <span title="Ano">📅 {game.ano}</span>}
+          {formatPreco(game.preco) && (
+            <span title="Preço médio" className="preco">💰 {formatPreco(game.preco)}</span>
+          )}
         </div>
 
         {game.descricao && <p className="desc">{game.descricao}</p>}

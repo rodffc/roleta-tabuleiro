@@ -47,7 +47,7 @@ export default function Filters({ filtros, setFiltros, categorias, onReset }) {
           <div className="range-row">
             <input
               type="range"
-              min="1"
+              min="0"
               max="16"
               value={filtros.jogadores}
               onChange={(e) => set({ jogadores: Number(e.target.value) })}

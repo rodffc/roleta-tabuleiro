@@ -5,6 +5,7 @@ import {
   imgSrc,
   formatJogadores,
   formatTempo,
+  formatPreco,
 } from '../lib/helpers.js'
 
 export default function GameDetailModal({ game, fav, vezesJogado, onClose, onToggleFav, onPlay, onEdit, onDelete }) {
@@ -23,6 +24,7 @@ export default function GameDetailModal({ game, fav, vezesJogado, onClose, onTog
     ['Editora', game.editora],
     ['Nota Ludopedia', game.nota_ludopedia != null ? `★ ${Number(game.nota_ludopedia).toFixed(1)}` : null],
     ['Ranking Ludopedia', game.rank_ludopedia != null ? `#${game.rank_ludopedia}` : null],
+    ['Preço médio', formatPreco(game.preco)],
     ['Vezes jogado', vezesJogado > 0 ? `${vezesJogado}×` : 'nunca'],
   ].filter(([, v]) => v != null && v !== '')
 

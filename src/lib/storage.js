@@ -80,6 +80,8 @@ export function syncFromSeed(current) {
           ludopediaUrl: bySeed[g.id].ludopediaUrl,
           nota_ludopedia: bySeed[g.id].nota_ludopedia,
           rank_ludopedia: bySeed[g.id].rank_ludopedia,
+          // mantém um preço que você editou manualmente; senão usa o do arquivo
+          preco: g.preco != null ? g.preco : bySeed[g.id].preco,
         }
       : g,
   )
