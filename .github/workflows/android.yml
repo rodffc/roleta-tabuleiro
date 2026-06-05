@@ -7,6 +7,9 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,9 +41,20 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/roleta-tabuleiro.apk"
 
       - name: Publicar APK como artefato
         uses: actions/upload-artifact@v4
         with:
           name: roleta-tabuleiro-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: roleta-tabuleiro.apk
+
+      - name: Publicar Release com link direto do APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app
+          name: Roleta de Tabuleiro — APK mais recente
+          body: |
+            APK gerado automaticamente. Baixe o arquivo **roleta-tabuleiro.apk** abaixo
+            e instale no celular (permita "fontes desconhecidas").
+          files: roleta-tabuleiro.apk

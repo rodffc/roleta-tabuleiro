@@ -259,7 +259,6 @@ export default function App() {
           </label>
           <span className="count">{filtrados.length} de {games.length} jogos</span>
           <div style={{ flex: 1 }} />
-          <button className="btn btn-sm btn-green" onClick={() => setMostraDescobrir(true)} title="Buscar novos jogos na Ludopedia">🔎 Descobrir</button>
           <button className="btn btn-sm btn-outline" onClick={() => setMostraBackup(true)} title="Salvar/restaurar seus dados">💾 Backup</button>
         </div>
 
@@ -308,13 +307,17 @@ export default function App() {
           <span className="ico">➕</span>
           Novo
         </button>
-        <button onClick={() => setMostraHist(true)}>
-          <span className="ico">📜</span>
-          Histórico
+        <button onClick={() => setMostraDescobrir(true)}>
+          <span className="ico">🔎</span>
+          Descobrir
         </button>
         <button className="destaque" onClick={abrirRoleta}>
           <span className="ico">🎡</span>
           Roleta
+        </button>
+        <button onClick={() => setMostraHist(true)}>
+          <span className="ico">📜</span>
+          Histórico
         </button>
         <button onClick={atualizarDados} title="Atualizar capas, notas e ranking">
           <span className="ico">🔄</span>

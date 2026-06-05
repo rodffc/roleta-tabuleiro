@@ -109,19 +109,53 @@ function apiBase() {
   return '/lp/api/v1' // navegador: proxy do Vite
 }
 
-// Busca jogos na API oficial. Lança erro com mensagem amigável em 401.
-export async function buscarJogosApi({ search = '', rows = 100, page = 1 } = {}) {
+async function apiGet(path, params = {}) {
   const token = getToken()
   if (!token) throw new Error('SEM_TOKEN')
-  const qs = new URLSearchParams({ rows: String(rows), page: String(page) })
-  if (search.trim()) qs.set('search', search.trim())
-  const res = await fetch(`${apiBase()}/jogos?${qs.toString()}`, {
+  const qs = new URLSearchParams()
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== '' && v != null) qs.set(k, String(v))
+  }
+  const url = `${apiBase()}${path}${qs.toString() ? `?${qs}` : ''}`
+  const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
   })
   if (res.status === 401) throw new Error('TOKEN_INVALIDO')
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const data = await res.json()
+  return res.json()
+}
+
+// Busca jogos na API oficial (filtros server-side: search, categoria, tema).
+export async function buscarJogosApi({ search = '', idCategoria = '', idTema = '', rows = 100, page = 1 } = {}) {
+  const data = await apiGet('/jogos', {
+    rows,
+    page,
+    search: search.trim(),
+    id_categoria: idCategoria,
+    id_tema: idTema,
+  })
   return data.jogos || data || []
+}
+
+// Normaliza itens de listas de filtro vindas da API (categorias/temas).
+function normLista(arr, idKeys, nomeKeys) {
+  return (arr || [])
+    .map((o) => ({
+      id: idKeys.map((k) => o[k]).find((v) => v != null),
+      nome: nomeKeys.map((k) => o[k]).find((v) => v != null),
+    }))
+    .filter((o) => o.id != null && o.nome)
+    .sort((a, b) => String(a.nome).localeCompare(String(b.nome), 'pt-BR'))
+}
+
+export async function listarCategorias() {
+  const d = await apiGet('/categorias', { rows: 200 })
+  return normLista(d.categorias || d, ['id_categoria', 'id'], ['nm_categoria', 'nome'])
+}
+
+export async function listarTemas() {
+  const d = await apiGet('/temas', { rows: 200 })
+  return normLista(d.temas || d, ['id_tema', 'id'], ['nm_tema', 'nome'])
 }
 
 // Converte um jogo vindo da API para o formato da coleção do app.

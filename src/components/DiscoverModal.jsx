@@ -4,6 +4,8 @@ import {
   setToken,
   buscarJogosApi,
   jogoApiParaColecao,
+  listarCategorias,
+  listarTemas,
 } from '../lib/ludopedia.js'
 import { imgSrc, formatJogadores, formatTempo } from '../lib/helpers.js'
 
@@ -12,10 +14,24 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
   const [salvouToken, setSalvouToken] = useState(!!getToken())
 
   const [search, setSearch] = useState('')
-  const [filtros, setFiltros] = useState({ jogadores: 0, tempoMax: 0, idadeMax: 0, anoMin: 0, tipo: 'Todos' })
+  const [filtros, setFiltros] = useState({
+    jogadores: 0, tempoMax: 0, idadeMax: 0, anoMin: 0, tipo: 'Todos', idCategoria: '', idTema: '',
+  })
   const [resultados, setResultados] = useState(null)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState(null)
+
+  const [categorias, setCategorias] = useState([])
+  const [temas, setTemas] = useState([])
+
+  // carrega listas de estilo/categoria e tema quando há token
+  useEffect(() => {
+    if (!salvouToken) return
+    let vivo = true
+    listarCategorias().then((c) => vivo && setCategorias(c)).catch(() => {})
+    listarTemas().then((t) => vivo && setTemas(t)).catch(() => {})
+    return () => { vivo = false }
+  }, [salvouToken])
 
   function salvarToken() {
     setToken(token)
@@ -28,8 +44,20 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
     setErro(null)
     setResultados(null)
     try {
-      const lista = await buscarJogosApi({ search, rows: 100 })
-      setResultados(lista.map(jogoApiParaColecao))
+      const lista = await buscarJogosApi({
+        search,
+        idCategoria: filtros.idCategoria,
+        idTema: filtros.idTema,
+        rows: 100,
+      })
+      const nomeCat = categorias.find((c) => String(c.id) === String(filtros.idCategoria))?.nome
+      setResultados(
+        lista.map((j) => {
+          const g = jogoApiParaColecao(j)
+          if (!g.estilo && nomeCat) g.estilo = nomeCat // usa a categoria escolhida como estilo
+          return g
+        }),
+      )
     } catch (e) {
       if (e.message === 'SEM_TOKEN') setErro('Configure seu token da Ludopedia primeiro.')
       else if (e.message === 'TOKEN_INVALIDO') setErro('Token inválido ou expirado. Gere um novo e salve.')
@@ -109,6 +137,20 @@ export default function DiscoverModal({ jaNaColecao, onAdd, onClose }) {
           </div>
 
           <div className="discover-filtros">
+            <label>
+              Estilo / categoria
+              <select value={filtros.idCategoria} onChange={(e) => setF({ idCategoria: e.target.value })}>
+                <option value="">Qualquer</option>
+                {categorias.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+              </select>
+            </label>
+            <label>
+              Tema
+              <select value={filtros.idTema} onChange={(e) => setF({ idTema: e.target.value })}>
+                <option value="">Qualquer</option>
+                {temas.map((t) => <option key={t.id} value={t.id}>{t.nome}</option>)}
+              </select>
+            </label>
             <label>
               Jogadores
               <select value={filtros.jogadores} onChange={(e) => setF({ jogadores: Number(e.target.value) })}>
