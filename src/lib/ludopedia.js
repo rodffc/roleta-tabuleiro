@@ -85,6 +85,71 @@ function parse(raw, slug) {
   }
 }
 
+// ---------------- API oficial (com token) ----------------
+const K_TOKEN = 'rt_ludo_token'
+
+export const getToken = () => {
+  try {
+    return localStorage.getItem(K_TOKEN) || ''
+  } catch {
+    return ''
+  }
+}
+export const setToken = (t) => {
+  try {
+    if (t) localStorage.setItem(K_TOKEN, t.trim())
+    else localStorage.removeItem(K_TOKEN)
+  } catch {
+    /* ignore */
+  }
+}
+
+function apiBase() {
+  if (typeof window === 'undefined' || isNative()) return `${SITE}/api/v1`
+  return '/lp/api/v1' // navegador: proxy do Vite
+}
+
+// Busca jogos na API oficial. Lança erro com mensagem amigável em 401.
+export async function buscarJogosApi({ search = '', rows = 100, page = 1 } = {}) {
+  const token = getToken()
+  if (!token) throw new Error('SEM_TOKEN')
+  const qs = new URLSearchParams({ rows: String(rows), page: String(page) })
+  if (search.trim()) qs.set('search', search.trim())
+  const res = await fetch(`${apiBase()}/jogos?${qs.toString()}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+  })
+  if (res.status === 401) throw new Error('TOKEN_INVALIDO')
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const data = await res.json()
+  return data.jogos || data || []
+}
+
+// Converte um jogo vindo da API para o formato da coleção do app.
+export function jogoApiParaColecao(j) {
+  const tp = String(j.tp_jogo || '').toLowerCase()
+  const ehExp = tp === 'e' || tp.includes('expan')
+  const idade = j.idade_minima ? `${j.idade_minima}+` : null
+  const tempo = j.vl_tempo_jogo != null ? Number(j.vl_tempo_jogo) : null
+  const cats = (j.categorias || []).map((c) => c.nm_categoria || c.nome).filter(Boolean)
+  return {
+    nome: j.nm_jogo || j.nome || 'Sem nome',
+    tipo: ehExp ? 'Expansão' : 'Base',
+    estilo: cats.slice(0, 3).join(' / '),
+    jogadores_min: j.qt_jogadores_min != null ? Number(j.qt_jogadores_min) : null,
+    jogadores_max: j.qt_jogadores_max != null ? Number(j.qt_jogadores_max) : null,
+    idade,
+    idade_min: j.idade_minima ? Number(j.idade_minima) : null,
+    tempo_min: tempo,
+    tempo_max: tempo,
+    ano: j.ano_publicacao ? String(j.ano_publicacao) : null,
+    imageUrl: j.thumb || null,
+    ludopediaUrl: j.link || null,
+    descricao: '',
+    preco: null,
+    bggId: null,
+  }
+}
+
 // Retorna os dados do 1º resultado da busca, ou null se não encontrar.
 export async function buscarNaLudopedia(query) {
   const s = await getText(`/search?search=${encodeURIComponent(query)}`)

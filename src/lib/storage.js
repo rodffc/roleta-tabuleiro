@@ -1,6 +1,7 @@
 // Persistência local (localStorage). Os dados ficam no navegador do usuário,
 // partindo do JSON embarcado (src/data/games.json) na primeira execução.
 import seed from '../data/games.json'
+import { getToken, setToken } from './ludopedia.js'
 
 const K_GAMES = 'rt_games_v1'
 const K_FAVS = 'rt_favs_v1'
@@ -117,6 +118,7 @@ export function exportData() {
     favs: read(K_FAVS, []),
     history: read(K_HIST, []),
     deleted: read(K_DELETED, []),
+    token: getToken(),
   }
 }
 
@@ -128,4 +130,5 @@ export function importData(obj) {
   write(K_FAVS, Array.isArray(obj.favs) ? obj.favs : [])
   write(K_HIST, Array.isArray(obj.history) ? obj.history : [])
   write(K_DELETED, Array.isArray(obj.deleted) ? obj.deleted : [])
+  if (obj.token) setToken(obj.token) // restaura o token da API da Ludopedia
 }

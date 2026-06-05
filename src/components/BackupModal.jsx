@@ -64,7 +64,8 @@ export default function BackupModal({ onClose, onImported }) {
         <div className="modal-body">
           <p style={{ marginTop: 0, color: 'var(--text-soft)', fontSize: '0.88rem' }}>
             Guarde este backup fora do app (Drive, e-mail, bloco de notas) para não perder seus
-            dados ao reinstalar ou trocar de aparelho.
+            dados ao reinstalar ou trocar de aparelho. O arquivo inclui seu <b>token da Ludopedia</b> —
+            não compartilhe com outras pessoas.
           </p>
 
           <h4 className="detail-section">Exportar — {resumo}</h4>

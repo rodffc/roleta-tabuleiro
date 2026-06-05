@@ -7,7 +7,8 @@ import HistoryModal from './components/HistoryModal.jsx'
 import GameDetailModal from './components/GameDetailModal.jsx'
 import PlayLogModal from './components/PlayLogModal.jsx'
 import BackupModal from './components/BackupModal.jsx'
-import { categoriasDe, todasCategorias, anoNum } from './lib/helpers.js'
+import DiscoverModal from './components/DiscoverModal.jsx'
+import { categoriasDe, todasCategorias, anoNum, slug } from './lib/helpers.js'
 import {
   loadGames,
   saveGames,
@@ -45,6 +46,7 @@ export default function App() {
   const [playGame, setPlayGame] = useState(null)
   const [mostraHist, setMostraHist] = useState(false)
   const [mostraBackup, setMostraBackup] = useState(false)
+  const [mostraDescobrir, setMostraDescobrir] = useState(false)
 
   useEffect(() => saveGames(games), [games])
   useEffect(() => saveFavs(favs), [favs])
@@ -162,6 +164,30 @@ export default function App() {
     setFormGame(game)
   }
 
+  // já existe na coleção? (por link da Ludopedia ou nome)
+  const jaNaColecao = (g) =>
+    games.some(
+      (x) =>
+        (g.ludopediaUrl && x.ludopediaUrl === g.ludopediaUrl) ||
+        x.nome.toLowerCase() === g.nome.toLowerCase(),
+    )
+
+  const adicionarDescoberto = (g) => {
+    setGames((gs) => {
+      if (
+        gs.some(
+          (x) =>
+            (g.ludopediaUrl && x.ludopediaUrl === g.ludopediaUrl) ||
+            x.nome.toLowerCase() === g.nome.toLowerCase(),
+        )
+      )
+        return gs
+      let id = slug(g.nome) || `jogo-${Date.now()}`
+      if (gs.some((x) => x.id === id)) id = `${id}-${Date.now()}`
+      return [...gs, { ...g, id, busca: [g.nome.toLowerCase()] }]
+    })
+  }
+
   const restaurar = () => {
     if (confirm('Restaurar a coleção original do arquivo? Suas inclusões/exclusões locais serão perdidas.')) {
       setGames(resetGames())
@@ -233,6 +259,7 @@ export default function App() {
           </label>
           <span className="count">{filtrados.length} de {games.length} jogos</span>
           <div style={{ flex: 1 }} />
+          <button className="btn btn-sm btn-green" onClick={() => setMostraDescobrir(true)} title="Buscar novos jogos na Ludopedia">🔎 Descobrir</button>
           <button className="btn btn-sm btn-outline" onClick={() => setMostraBackup(true)} title="Salvar/restaurar seus dados">💾 Backup</button>
         </div>
 
@@ -322,6 +349,13 @@ export default function App() {
           games={games}
           onClose={() => setMostraHist(false)}
           onClear={() => { if (confirm('Limpar todo o histórico?')) setHistory([]) }}
+        />
+      )}
+      {mostraDescobrir && (
+        <DiscoverModal
+          jaNaColecao={jaNaColecao}
+          onAdd={adicionarDescoberto}
+          onClose={() => setMostraDescobrir(false)}
         />
       )}
       {mostraBackup && (
