@@ -6,6 +6,7 @@ import {
   formatJogadores,
   formatTempo,
   formatPreco,
+  formatData,
 } from '../lib/helpers.js'
 
 export default function GameDetailModal({ game, modo = 'colecao', fav, vezesJogado, onClose, onToggleFav, onPlay, onComprar, onEdit, onDelete }) {
@@ -26,14 +27,25 @@ export default function GameDetailModal({ game, modo = 'colecao', fav, vezesJoga
     ['Nota Ludopedia', game.nota_ludopedia != null ? `★ ${Number(game.nota_ludopedia).toFixed(1)}` : null],
     ['Ranking Ludopedia', game.rank_ludopedia != null ? `#${game.rank_ludopedia}` : null],
     ['Preço médio', formatPreco(game.preco)],
-    ...(ehDesejo ? [] : [['Vezes jogado', vezesJogado > 0 ? `${vezesJogado}×` : 'nunca']]),
+    ...(ehDesejo
+      ? [['Adicionado em', game.dataInclusao ? formatData(game.dataInclusao) : null]]
+      : [['Vezes jogado', vezesJogado > 0 ? `${vezesJogado}×` : 'nunca']]),
   ].filter(([, v]) => v != null && v !== '')
 
   return (
     <div className="overlay" onClick={onClose}>
       <div className="modal modal-wide" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h3>{game.nome}{ehExpansao && <span className="exp-tag" style={{ marginLeft: 8 }}>EXP</span>}</h3>
+          <h3>
+            {game.ludopediaUrl ? (
+              <a href={game.ludopediaUrl} target="_blank" rel="noreferrer" className="detail-title-link" title="Abrir na Ludopedia">
+                {game.nome} 🔗
+              </a>
+            ) : (
+              game.nome
+            )}
+            {ehExpansao && <span className="exp-tag" style={{ marginLeft: 8 }}>EXP</span>}
+          </h3>
           <button className="x" onClick={onClose}>×</button>
         </div>
 

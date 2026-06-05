@@ -6,6 +6,7 @@ import {
   formatJogadores,
   formatTempo,
   formatPreco,
+  formatData,
 } from '../lib/helpers.js'
 
 export default function GameCard({ game, modo = 'colecao', fav, onToggleFav, onPlay, onComprar, onEdit, onDelete, onOpen }) {
@@ -56,6 +57,9 @@ export default function GameCard({ game, modo = 'colecao', fav, onToggleFav, onP
           {game.ano && <span title="Ano">📅 {game.ano}</span>}
           {formatPreco(game.preco) && (
             <span title="Preço médio" className="preco">💰 {formatPreco(game.preco)}</span>
+          )}
+          {ehDesejo && game.dataInclusao && (
+            <span title="Adicionado à lista de desejos">📌 {formatData(game.dataInclusao)}</span>
           )}
         </div>
 

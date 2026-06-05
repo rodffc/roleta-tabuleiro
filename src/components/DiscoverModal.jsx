@@ -1,64 +1,76 @@
-import { useEffect, useMemo, useState } from 'react'
-import { listarFiltro, descobrirJogos, dadosPorSlug } from '../lib/ludopedia.js'
+import { useEffect, useState } from 'react'
+import { listarFiltro, descobrirJogos, dadosPorSlug, precoPorSlug } from '../lib/ludopedia.js'
 import { imgSrc } from '../lib/helpers.js'
 
-const TIPOS = [
-  { key: 'categorias', label: 'Categoria / estilo' },
-  { key: 'temas', label: 'Tema' },
-  { key: 'mecanicas', label: 'Mecânica' },
+const DIMS = [
+  { tipo: 'categorias', label: 'Categoria / estilo' },
+  { tipo: 'temas', label: 'Tema' },
+  { tipo: 'mecanicas', label: 'Mecânica' },
 ]
+const PAGE_SIZE = 24
+
+// cache da última busca (persiste enquanto o app está aberto) — reabrir é instantâneo
+let ultima = null
 
 export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onClose }) {
-  const [tipo, setTipo] = useState('categorias')
-  const [opcoes, setOpcoes] = useState([])
-  const [id, setId] = useState('')
-  const [carregandoOpcoes, setCarregandoOpcoes] = useState(false)
-
-  const [resultados, setResultados] = useState(null)
+  const [opcoes, setOpcoes] = useState({ categorias: [], temas: [], mecanicas: [] })
+  const [sel, setSel] = useState(ultima?.sel || { categorias: '', temas: '', mecanicas: '' })
+  const [pool, setPool] = useState(ultima?.pool || null)
+  const [page, setPage] = useState(ultima?.page || 0)
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState(null)
-  const [addingSlug, setAddingSlug] = useState(null)
+  const [addingKey, setAddingKey] = useState(null)
 
-  // carrega as opções do tipo escolhido (categorias/temas/mecanicas)
+  // carrega as opções dos três filtros (cacheadas na lib)
   useEffect(() => {
     let vivo = true
-    setCarregandoOpcoes(true)
-    setId('')
-    listarFiltro(tipo)
-      .then((l) => vivo && setOpcoes(l))
-      .catch(() => vivo && setErro('Não foi possível carregar a lista de filtros.'))
-      .finally(() => vivo && setCarregandoOpcoes(false))
+    Promise.all(
+      DIMS.map((d) => listarFiltro(d.tipo).then((l) => [d.tipo, l]).catch(() => [d.tipo, []])),
+    ).then((pares) => vivo && setOpcoes(Object.fromEntries(pares)))
     return () => { vivo = false }
-  }, [tipo])
+  }, [])
 
-  const nomeFiltro = useMemo(
-    () => opcoes.find((o) => String(o.id) === String(id))?.nome || '',
-    [opcoes, id],
-  )
+  const nomeDe = (tipo, id) => opcoes[tipo].find((o) => String(o.id) === String(id))?.nome || ''
 
   async function buscar() {
-    if (!id) {
-      setErro('Escolha uma opção para buscar.')
+    const filtros = DIMS.filter((d) => sel[d.tipo]).map((d) => ({
+      tipo: d.tipo,
+      id: sel[d.tipo],
+      nome: nomeDe(d.tipo, sel[d.tipo]),
+    }))
+    if (!filtros.length) {
+      setErro('Escolha pelo menos um filtro.')
       return
     }
     setCarregando(true)
     setErro(null)
-    setResultados(null)
+    setPool(null)
     try {
-      const lista = await descobrirJogos(tipo, id)
-      setResultados(lista.map((g) => ({ ...g, estilo: g.estilo || nomeFiltro })))
+      const lista = await descobrirJogos(filtros)
+      setPool(lista)
+      setPage(0)
+      ultima = { sel, pool: lista, page: 0 }
     } catch (e) {
-      setErro(`Falha na busca: ${e.message}`)
+      setErro('Falha na busca: ' + e.message)
     } finally {
       setCarregando(false)
     }
   }
 
+  // mantém a página no cache ao navegar
+  useEffect(() => {
+    if (ultima && pool) ultima.page = page
+  }, [page, pool])
+
   async function adicionar(g, destino) {
     const add = destino === 'desejos' ? onAddDesejo : onAddColecao
-    setAddingSlug(g.slug + destino)
+    setAddingKey(g.slug + destino)
     try {
-      const ex = await dadosPorSlug(g.slug) // enriquece com jogadores/tempo/idade/nota
+      // busca detalhes e preço em paralelo
+      const [ex, preco] = await Promise.all([
+        dadosPorSlug(g.slug),
+        precoPorSlug(g.slug).catch(() => null),
+      ])
       const idadeMin = ex.idade ? Number(String(ex.idade).match(/\d+/)?.[0]) : null
       add({
         ...g,
@@ -72,14 +84,19 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
         jogadores_max: ex.jogadores_max ?? null,
         nota_ludopedia: ex.nota_ludopedia ?? null,
         rank_ludopedia: ex.rank_ludopedia ?? null,
+        descricao: ex.descricao || g.descricao || '',
+        preco: preco ?? null,
         ludopediaUrl: ex.ludopediaUrl || g.ludopediaUrl,
       })
     } catch {
-      add(g) // ao menos adiciona com os dados básicos
+      add(g)
     } finally {
-      setAddingSlug(null)
+      setAddingKey(null)
     }
   }
+
+  const totalPaginas = pool ? Math.max(1, Math.ceil(pool.length / PAGE_SIZE)) : 0
+  const itens = pool ? pool.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE) : []
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -90,27 +107,26 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
         </div>
         <div className="modal-body">
           <p style={{ marginTop: 0, color: 'var(--text-soft)', fontSize: '0.85rem' }}>
-            Navegue pelo acervo da Ludopedia por categoria/estilo, tema ou mecânica e adicione à sua coleção.
+            Combine um ou mais filtros (categoria, tema, mecânica) e busque no acervo da Ludopedia.
           </p>
 
           <div className="discover-filtros">
-            <label>
-              Filtrar por
-              <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                {TIPOS.map((t) => <option key={t.key} value={t.key}>{t.label}</option>)}
-              </select>
-            </label>
-            <label style={{ flex: 1, minWidth: 180 }}>
-              {carregandoOpcoes ? 'Carregando…' : `Opção (${opcoes.length})`}
-              <select value={id} onChange={(e) => setId(e.target.value)} disabled={carregandoOpcoes}>
-                <option value="">Selecione…</option>
-                {opcoes.map((o) => <option key={o.id} value={o.id}>{o.nome}</option>)}
-              </select>
-            </label>
+            {DIMS.map((d) => (
+              <label key={d.tipo}>
+                {d.label}
+                <select
+                  value={sel[d.tipo]}
+                  onChange={(e) => setSel((s) => ({ ...s, [d.tipo]: e.target.value }))}
+                >
+                  <option value="">Qualquer</option>
+                  {opcoes[d.tipo].map((o) => <option key={o.id} value={o.id}>{o.nome}</option>)}
+                </select>
+              </label>
+            ))}
             <button
               className="btn btn-green btn-sm"
               onClick={buscar}
-              disabled={carregando || !id}
+              disabled={carregando}
               style={{ alignSelf: 'flex-end' }}
             >
               {carregando ? '⏳…' : '🔎 Buscar'}
@@ -119,23 +135,36 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
 
           {erro && <p className="busca-erro" style={{ marginTop: 10 }}>{erro}</p>}
 
-          {resultados && (
+          {pool && (
             <>
-              <h4 className="detail-section">{resultados.length} jogo(s) — {nomeFiltro}</h4>
+              <div className="discover-head">
+                <h4 className="detail-section" style={{ margin: 0 }}>{pool.length} jogo(s)</h4>
+                {totalPaginas > 1 && (
+                  <div className="pager">
+                    <button className="btn btn-sm btn-outline" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>‹</button>
+                    <span>Pág. {page + 1}/{totalPaginas}</span>
+                    <button className="btn btn-sm btn-outline" disabled={page >= totalPaginas - 1} onClick={() => setPage((p) => p + 1)}>›</button>
+                  </div>
+                )}
+              </div>
+
               <div className="discover-list">
-                {resultados.map((g) => {
+                {itens.map((g, i) => {
                   const onde = ondeEsta(g)
-                  const ocupado = addingSlug === g.slug + 'colecao' || addingSlug === g.slug + 'desejos'
+                  const ocupado = addingKey === g.slug + 'colecao' || addingKey === g.slug + 'desejos'
                   return (
                     <div className="discover-item" key={g.slug}>
+                      <span className="discover-rank">{page * PAGE_SIZE + i + 1}</span>
                       {imgSrc(g.imageUrl) ? (
                         <img src={imgSrc(g.imageUrl)} alt={g.nome} loading="lazy" />
                       ) : (
                         <span className="discover-ph">🎲</span>
                       )}
                       <div className="discover-info">
-                        <b>{g.nome}</b>
-                        <span>{nomeFiltro}</span>
+                        <a href={g.ludopediaUrl} target="_blank" rel="noreferrer" className="discover-nome">
+                          {g.nome}
+                        </a>
+                        <span>{g.estilo}</span>
                       </div>
                       {onde ? (
                         <span className="discover-status">
@@ -143,31 +172,31 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
                         </span>
                       ) : (
                         <div className="discover-acoes">
-                          <button
-                            className="btn btn-sm btn-green"
-                            disabled={ocupado}
-                            onClick={() => adicionar(g, 'colecao')}
-                            title="Adicionar à coleção"
-                          >
-                            {addingSlug === g.slug + 'colecao' ? '⏳' : '➕ Coleção'}
+                          <button className="btn btn-sm btn-green" disabled={ocupado} onClick={() => adicionar(g, 'colecao')} title="Adicionar à coleção">
+                            {addingKey === g.slug + 'colecao' ? '⏳' : '➕ Coleção'}
                           </button>
-                          <button
-                            className="btn btn-sm btn-outline"
-                            disabled={ocupado}
-                            onClick={() => adicionar(g, 'desejos')}
-                            title="Adicionar à lista de desejos"
-                          >
-                            {addingSlug === g.slug + 'desejos' ? '⏳' : '💖 Desejo'}
+                          <button className="btn btn-sm btn-outline" disabled={ocupado} onClick={() => adicionar(g, 'desejos')} title="Adicionar à lista de desejos">
+                            {addingKey === g.slug + 'desejos' ? '⏳' : '💖 Desejo'}
                           </button>
                         </div>
                       )}
                     </div>
                   )
                 })}
-                {resultados.length === 0 && (
-                  <p style={{ color: 'var(--text-soft)' }}>Nenhum jogo encontrado nesse filtro.</p>
+                {pool.length === 0 && (
+                  <p style={{ color: 'var(--text-soft)' }}>
+                    Nenhum jogo encontrado com esses filtros combinados. Tente menos filtros.
+                  </p>
                 )}
               </div>
+
+              {totalPaginas > 1 && (
+                <div className="pager" style={{ justifyContent: 'center', marginTop: 12 }}>
+                  <button className="btn btn-sm btn-outline" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>‹ Anterior</button>
+                  <span>Pág. {page + 1}/{totalPaginas}</span>
+                  <button className="btn btn-sm btn-outline" disabled={page >= totalPaginas - 1} onClick={() => setPage((p) => p + 1)}>Próxima ›</button>
+                </div>
+              )}
             </>
           )}
         </div>

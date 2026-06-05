@@ -9,6 +9,7 @@ import PlayLogModal from './components/PlayLogModal.jsx'
 import BackupModal from './components/BackupModal.jsx'
 import DiscoverModal from './components/DiscoverModal.jsx'
 import { categoriasDe, todasCategorias, anoNum, slug } from './lib/helpers.js'
+import { precoPorSlug } from './lib/ludopedia.js'
 import {
   loadGames,
   saveGames,
@@ -215,7 +216,7 @@ export default function App() {
 
   const adicionarDesejo = (g) => {
     if (ondeEsta(g)) return
-    setWishlist((w) => [...w, novoComId(g, w)])
+    setWishlist((w) => [...w, { ...novoComId(g, w), dataInclusao: new Date().toISOString() }])
   }
 
   // marca um item da lista de desejos como comprado: sai dos desejos, entra na coleção
@@ -231,14 +232,38 @@ export default function App() {
     }
   }
 
-  const atualizarDados = () => {
+  const [atualizando, setAtualizando] = useState(false)
+  const atualizarDados = async () => {
     if (
-      confirm(
-        'Atualizar capas, notas e ranking a partir do arquivo de dados (gerado por "npm run enrich")? Seus jogos adicionados e demais edições são mantidos.',
+      !confirm(
+        'Atualizar capas, notas e ranking da coleção (do arquivo) e os preços da lista de desejos (na Ludopedia)?',
       )
-    ) {
-      setGames((gs) => syncFromSeed(gs))
+    )
+      return
+    setAtualizando(true)
+    setGames((gs) => syncFromSeed(gs))
+    // preços da lista de desejos: busca ao vivo na Ludopedia
+    if (wishlist.length) {
+      try {
+        const atualizados = await Promise.all(
+          wishlist.map(async (g) => {
+            const s = (g.ludopediaUrl || '').match(/\/jogo\/([a-z0-9-]+)/)?.[1]
+            if (!s) return g
+            try {
+              const p = await precoPorSlug(s)
+              return p != null ? { ...g, preco: p } : g
+            } catch {
+              return g
+            }
+          }),
+        )
+        setWishlist(atualizados)
+      } catch {
+        /* ignora falhas de rede */
+      }
     }
+    setAtualizando(false)
+    alert('Atualização concluída.')
   }
 
   const abrirRoleta = () => {
@@ -379,8 +404,8 @@ export default function App() {
           <span className="ico">📜</span>
           Histórico
         </button>
-        <button onClick={atualizarDados} title="Atualizar capas, notas e ranking">
-          <span className="ico">🔄</span>
+        <button onClick={atualizarDados} disabled={atualizando} title="Atualizar dados e preços dos desejos">
+          <span className="ico">{atualizando ? '⏳' : '🔄'}</span>
           Atualizar
         </button>
       </nav>

@@ -70,6 +70,14 @@ function parse(raw, slug) {
   const jogadores_min = jogM ? Number(jogM[1]) : null
   const jogadores_max = jogM ? Number(jogM[2] ?? jogM[1]) : null
 
+  // Descrição (textarea oculto id="jogo_desc")
+  const descM = raw.match(/id="jogo_desc"[^>]*>([\s\S]*?)<\/textarea>/i)
+  let descricao = ''
+  if (descM) {
+    descricao = decode(descM[1].replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
+    if (descricao.length > 800) descricao = descricao.slice(0, 797).trimEnd() + '…'
+  }
+
   return {
     slug,
     nome: meta(raw, 'og:title'),
@@ -81,6 +89,7 @@ function parse(raw, slug) {
     tempo_max,
     jogadores_min,
     jogadores_max,
+    descricao,
     ludopediaUrl: `${SITE}/jogo/${slug}`,
   }
 }
@@ -106,9 +115,16 @@ export const setToken = (t) => {
 
 // ---------------- Descobrir jogos (sem token, via páginas do site) ----------------
 const SINGULAR = { categorias: 'categoria', temas: 'tema', mecanicas: 'mecanica' }
+const PARAM = { categorias: 'id_categoria', temas: 'id_tema', mecanicas: 'id_mecanica' }
+const MAX_PAGINAS = 4 // ranking traz 50 por página
+
+// Caches em memória (somem ao recarregar) para acelerar buscas repetidas.
+const cacheTaxonomia = new Map() // tipo -> [{id,nome}]
+const cachePagina = new Map() // `${tipo}:${id}:${pag}` -> jogos[]
 
 // Lista as opções de um filtro (categorias / temas / mecanicas) -> [{id, nome}].
 export async function listarFiltro(tipo) {
+  if (cacheTaxonomia.has(tipo)) return cacheTaxonomia.get(tipo)
   const singular = SINGULAR[tipo]
   const html = await getText(`/${tipo}`)
   const re = new RegExp(`/${singular}/(\\d+)">([^<]{1,60})<`, 'gi')
@@ -119,7 +135,9 @@ export async function listarFiltro(tipo) {
     seen.add(m[1])
     out.push({ id: m[1], nome: decode(m[2].trim()) })
   }
-  return out.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+  out.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+  cacheTaxonomia.set(tipo, out)
+  return out
 }
 
 // Extrai os jogos (capa + nome) de uma página de listagem do site.
@@ -159,17 +177,67 @@ function parseListaJogos(html) {
   }))
 }
 
-// Lista os jogos de uma categoria / tema / mecânica.
-export async function descobrirJogos(tipo, id) {
-  const singular = SINGULAR[tipo]
-  const html = await getText(`/${singular}/${id}`)
-  return parseListaJogos(html)
+// Uma página (50 jogos) do ranking filtrado por um critério. Com cache.
+async function rankingPagina(tipo, id, pag) {
+  const chave = `${tipo}:${id}:${pag}`
+  if (cachePagina.has(chave)) return cachePagina.get(chave)
+  const html = await getText(`/ranking?${PARAM[tipo]}=${id}&pagina=${pag}`)
+  const jogos = parseListaJogos(html)
+  cachePagina.set(chave, jogos)
+  return jogos
+}
+
+// Junta as primeiras páginas de um filtro (dedup, mantém a ordem do ranking).
+async function poolDoFiltro(tipo, id) {
+  const reqs = []
+  for (let p = 1; p <= MAX_PAGINAS; p++) reqs.push(rankingPagina(tipo, id, p))
+  const paginas = await Promise.all(reqs)
+  const out = []
+  const seen = new Set()
+  for (const pg of paginas) {
+    for (const g of pg) {
+      if (!seen.has(g.slug)) {
+        seen.add(g.slug)
+        out.push(g)
+      }
+    }
+  }
+  return out
+}
+
+// Descobre jogos por 1+ filtros. Com vários filtros, faz interseção (E lógico).
+// filtros = [{ tipo, id, nome }]
+export async function descobrirJogos(filtros) {
+  if (!filtros.length) return []
+  const [primeiro, ...resto] = filtros
+  const base = await poolDoFiltro(primeiro.tipo, primeiro.id)
+  const estilo = filtros.map((f) => f.nome).join(' / ')
+  if (!resto.length) return base.map((g) => ({ ...g, estilo: g.estilo || primeiro.nome }))
+  const conjuntos = await Promise.all(
+    resto.map((f) => poolDoFiltro(f.tipo, f.id).then((l) => new Set(l.map((g) => g.slug)))),
+  )
+  return base
+    .filter((g) => conjuntos.every((s) => s.has(g.slug)))
+    .map((g) => ({ ...g, estilo: g.estilo || estilo }))
 }
 
 // Busca os dados completos de um jogo pela sua slug (para enriquecer ao adicionar).
 export async function dadosPorSlug(slug) {
   const raw = await getText(`/jogo/${slug}`)
   return parse(raw, slug)
+}
+
+// Preço típico (mediana dos anúncios da loja); null se houver menos de 3 anúncios.
+export async function precoPorSlug(slug) {
+  const html = await getText(`/jogo/${slug}?v=anuncios`)
+  const vals = [...html.matchAll(/R\$\s*([\d.]+,\d{2})/g)]
+    .map((m) => Number(m[1].replace(/\./g, '').replace(',', '.')))
+    .filter((v) => v >= 10 && v <= 10000)
+  if (vals.length < 3) return null
+  const s = [...vals].sort((a, b) => a - b)
+  const mid = Math.floor(s.length / 2)
+  const med = s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2
+  return Math.round(med * 100) / 100
 }
 
 // Retorna os dados do 1º resultado da busca, ou null se não encontrar.
