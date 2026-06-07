@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { listarFiltro, descobrirJogos, dadosPorSlug, precoPorSlug } from '../lib/ludopedia.js'
+import { listarFiltro, descobrirJogos, buscarPorNome, dadosPorSlug, precoPorSlug } from '../lib/ludopedia.js'
 import { imgSrc } from '../lib/helpers.js'
 
 const DIMS = [
@@ -14,6 +14,7 @@ let ultima = null
 
 export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onClose }) {
   const [opcoes, setOpcoes] = useState({ categorias: [], temas: [], mecanicas: [] })
+  const [nome, setNome] = useState(ultima?.nome || '')
   const [sel, setSel] = useState(ultima?.sel || { categorias: '', temas: '', mecanicas: '' })
   const [pool, setPool] = useState(ultima?.pool || null)
   const [page, setPage] = useState(ultima?.page || 0)
@@ -33,23 +34,25 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
   const nomeDe = (tipo, id) => opcoes[tipo].find((o) => String(o.id) === String(id))?.nome || ''
 
   async function buscar() {
+    const temNome = nome.trim().length > 0
     const filtros = DIMS.filter((d) => sel[d.tipo]).map((d) => ({
       tipo: d.tipo,
       id: sel[d.tipo],
       nome: nomeDe(d.tipo, sel[d.tipo]),
     }))
-    if (!filtros.length) {
-      setErro('Escolha pelo menos um filtro.')
+    if (!temNome && !filtros.length) {
+      setErro('Digite o nome de um jogo ou escolha pelo menos um filtro.')
       return
     }
     setCarregando(true)
     setErro(null)
     setPool(null)
     try {
-      const lista = await descobrirJogos(filtros)
+      // busca por nome tem prioridade quando preenchido
+      const lista = temNome ? await buscarPorNome(nome) : await descobrirJogos(filtros)
       setPool(lista)
       setPage(0)
-      ultima = { sel, pool: lista, page: 0 }
+      ultima = { nome, sel, pool: lista, page: 0 }
     } catch (e) {
       setErro('Falha na busca: ' + e.message)
     } finally {
@@ -107,8 +110,28 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
         </div>
         <div className="modal-body">
           <p style={{ marginTop: 0, color: 'var(--text-soft)', fontSize: '0.85rem' }}>
-            Combine um ou mais filtros (categoria, tema, mecânica) e busque no acervo da Ludopedia.
+            Busque pelo <b>nome</b> do jogo, ou combine filtros (categoria, tema, mecânica).
           </p>
+
+          <div className="form-row">
+            <label>Nome do jogo</label>
+            <div className="busca-row">
+              <input
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="ex: Wingspan, Catan…"
+                onKeyDown={(e) => e.key === 'Enter' && buscar()}
+              />
+              {nome && (
+                <button className="btn btn-outline btn-sm" onClick={() => setNome('')} title="Limpar nome">
+                  ✕
+                </button>
+              )}
+            </div>
+            <small style={{ color: 'var(--text-soft)' }}>
+              Se preencher o nome, a busca usa o nome (ignora os filtros abaixo).
+            </small>
+          </div>
 
           <div className="discover-filtros">
             {DIMS.map((d) => (

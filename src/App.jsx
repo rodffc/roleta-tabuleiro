@@ -266,6 +266,15 @@ export default function App() {
     alert('Atualização concluída.')
   }
 
+  // troca de aba: filtros e busca são independentes por aba (não vazam)
+  const trocarAba = (nova) => {
+    if (nova === aba) return
+    setAba(nova)
+    setBusca('')
+    setFiltros(FILTROS_INICIAIS)
+    setMostraFiltros(false)
+  }
+
   const abrirRoleta = () => {
     if (filtrados.length === 0) {
       alert('Nenhum jogo no filtro atual para sortear. Ajuste os filtros.')
@@ -304,13 +313,13 @@ export default function App() {
         <div className="tabs">
           <button
             className={'tab' + (aba === 'colecao' ? ' active' : '')}
-            onClick={() => setAba('colecao')}
+            onClick={() => trocarAba('colecao')}
           >
             🎲 Minha coleção <span className="tab-count">{games.length}</span>
           </button>
           <button
             className={'tab' + (aba === 'desejos' ? ' active' : '')}
-            onClick={() => setAba('desejos')}
+            onClick={() => trocarAba('desejos')}
           >
             💖 Lista de desejos <span className="tab-count">{wishlist.length}</span>
           </button>

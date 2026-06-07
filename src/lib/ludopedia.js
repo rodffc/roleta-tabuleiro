@@ -144,7 +144,8 @@ export async function listarFiltro(tipo) {
 function parseListaJogos(html) {
   const itens = []
   const seen = new Set()
-  const reCapa = /\/jogo\/([a-z0-9-]+)">\s*<div class="div-capa[^"]*">\s*<img class="img-capa" src="([^"]+)"/gi
+  // tolera tanto o ranking (div-capa + img-capa) quanto a busca por nome (img-capa-md)
+  const reCapa = /\/jogo\/([a-z0-9-]+)"[^>]*>\s*(?:<div[^>]*>\s*)?<img[^>]*class="[^"]*img-capa[^"]*"[^>]*src="([^"]+)"/gi
   let m
   while ((m = reCapa.exec(html))) {
     if (seen.has(m[1])) continue
@@ -152,8 +153,15 @@ function parseListaJogos(html) {
     itens.push({ slug: m[1], cover: m[2] })
   }
   const nomes = {}
-  for (const n of html.matchAll(/\/jogo\/([a-z0-9-]+)"[^>]*>([^<]{2,70})<\/a>/gi)) {
-    if (!nomes[n[1]]) nomes[n[1]] = decode(n[2].trim())
+  // busca por nome: <a .../jogo/slug" class="full-link"> <h4>Nome <label>(ano)</label>
+  for (const n of html.matchAll(/\/jogo\/([a-z0-9-]+)"[^>]*class="full-link"[^>]*>\s*<h4[^>]*>\s*([^<]{1,70})/gi)) {
+    const txt = decode(n[2].trim())
+    if (txt && !nomes[n[1]]) nomes[n[1]] = txt
+  }
+  // ranking/categoria: o nome vem logo após o link
+  for (const n of html.matchAll(/\/jogo\/([a-z0-9-]+)"[^>]*>\s*([^<]{2,70})/gi)) {
+    const txt = decode(n[2].trim())
+    if (txt && !nomes[n[1]] && /[a-zA-ZÀ-ÿ]/.test(txt)) nomes[n[1]] = txt
   }
   return itens.map((it) => ({
     slug: it.slug,
@@ -219,6 +227,30 @@ export async function descobrirJogos(filtros) {
   return base
     .filter((g) => conjuntos.every((s) => s.has(g.slug)))
     .map((g) => ({ ...g, estilo: g.estilo || estilo }))
+}
+
+// Busca jogos por NOME (página /search). Com cache.
+export async function buscarPorNome(nome) {
+  const q = nome.trim()
+  if (!q) return []
+  const chave = `nome:${q.toLowerCase()}`
+  if (cachePagina.has(chave)) return cachePagina.get(chave)
+  const reqs = [1, 2].map((p) =>
+    getText(`/search?search=${encodeURIComponent(q)}&pagina=${p}`).then(parseListaJogos).catch(() => []),
+  )
+  const paginas = await Promise.all(reqs)
+  const out = []
+  const seen = new Set()
+  for (const pg of paginas) {
+    for (const g of pg) {
+      if (!seen.has(g.slug)) {
+        seen.add(g.slug)
+        out.push(g)
+      }
+    }
+  }
+  cachePagina.set(chave, out)
+  return out
 }
 
 // Busca os dados completos de um jogo pela sua slug (para enriquecer ao adicionar).
