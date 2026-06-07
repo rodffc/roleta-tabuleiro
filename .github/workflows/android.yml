@@ -36,12 +36,26 @@ jobs:
 
       - uses: android-actions/setup-android@v3
 
-      - name: Gerar APK (debug)
+      - name: Garantir keystore estável (gera 1x e versiona)
+        run: |
+          if [ ! -f android/roleta.keystore ]; then
+            keytool -genkeypair -v -keystore android/roleta.keystore \
+              -alias roleta -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass roletajogos -keypass roletajogos \
+              -dname "CN=Roleta dos jogos, OU=app, O=pessoal, C=BR"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add -f android/roleta.keystore
+            git commit -m "chore: keystore estável de assinatura [skip ci]"
+            git push
+          fi
+
+      - name: Gerar APK (release assinado)
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
-          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/roleta-tabuleiro.apk"
+          ./gradlew assembleRelease --no-daemon -Pvc=${{ github.run_number }} -Pvn=1.0.${{ github.run_number }}
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/roleta-tabuleiro.apk"
 
       - name: Publicar APK como artefato
         uses: actions/upload-artifact@v4
