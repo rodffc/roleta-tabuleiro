@@ -32,14 +32,23 @@ async function precoDoJogo(slug) {
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const html = await res.text()
-  // valores no formato brasileiro: R$ 1.234,56
-  const valores = [...html.matchAll(/R\$\s*([\d.]+,\d{2})/g)]
-    .map((m) => Number(m[1].replace(/\./g, '').replace(',', '.')))
-    .filter((v) => v >= 10 && v <= 10000) // descarta fretes/ruídos e absurdos
-  // exige no mínimo 3 anúncios para um preço confiável; senão deixa em branco
-  if (valores.length < 3) return { preco: null, n: valores.length }
-  const med = mediana(valores)
-  return { preco: Math.round(med * 100) / 100, n: valores.length }
+  // parseia cada linha da tabela: prioriza condição "Novo" e descarta acessórios
+  const novos = []
+  const todos = []
+  for (const tr of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const row = tr[1]
+    const val = row.match(/R\$\s*([\d.]+,\d{2})/)
+    if (!val) continue
+    const preco = Number(val[1].replace(/\./g, '').replace(',', '.'))
+    if (!(preco >= 10 && preco <= 10000)) continue
+    todos.push(preco)
+    if (/<td[^>]*>\s*Novo\s*<\/td>/i.test(row)) novos.push(preco)
+  }
+  const base = novos.length >= 3 ? novos : todos
+  if (base.length < 3) return { preco: null, n: base.length }
+  const m0 = mediana(base)
+  const limpo = base.filter((v) => v >= m0 * 0.5) // tira acessórios/peças avulsas
+  return { preco: Math.round(mediana(limpo) * 100) / 100, n: base.length, novos: novos.length }
 }
 
 const data = JSON.parse(readFileSync(dataPath, 'utf8'))

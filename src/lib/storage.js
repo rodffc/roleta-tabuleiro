@@ -90,9 +90,10 @@ export function syncFromSeed(current) {
         }
       : g,
   )
-  // adiciona jogos do arquivo que ainda não estão na coleção local
+  // adiciona jogos NOVOS do arquivo, exceto os que você já excluiu
   const idsAtuais = new Set(current.map((g) => g.id))
-  const novos = seed.jogos.filter((g) => !idsAtuais.has(g.id))
+  const deletados = new Set(read(K_DELETED, []))
+  const novos = seed.jogos.filter((g) => !idsAtuais.has(g.id) && !deletados.has(g.id))
   const out = [...merged, ...novos]
   write(K_GAMES, out)
   return out

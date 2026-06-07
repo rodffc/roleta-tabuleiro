@@ -261,17 +261,36 @@ export async function dadosPorSlug(slug) {
   return parse(raw, slug)
 }
 
-// Preço típico (mediana dos anúncios da loja); null se houver menos de 3 anúncios.
+function mediana(arr) {
+  if (!arr.length) return null
+  const s = [...arr].sort((a, b) => a - b)
+  const m = Math.floor(s.length / 2)
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2
+}
+
+// Estima o preço do JOGO a partir dos anúncios da loja.
+// Prioriza condição "Novo" e descarta acessórios/itens baratos (outliers baixos),
+// que costumam puxar a média para baixo. null se houver poucos anúncios.
 export async function precoPorSlug(slug) {
   const html = await getText(`/jogo/${slug}?v=anuncios`)
-  const vals = [...html.matchAll(/R\$\s*([\d.]+,\d{2})/g)]
-    .map((m) => Number(m[1].replace(/\./g, '').replace(',', '.')))
-    .filter((v) => v >= 10 && v <= 10000)
-  if (vals.length < 3) return null
-  const s = [...vals].sort((a, b) => a - b)
-  const mid = Math.floor(s.length / 2)
-  const med = s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2
-  return Math.round(med * 100) / 100
+  const novos = []
+  const todos = []
+  for (const tr of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/gi)) {
+    const row = tr[1]
+    const val = row.match(/R\$\s*([\d.]+,\d{2})/)
+    if (!val) continue
+    const preco = Number(val[1].replace(/\./g, '').replace(',', '.'))
+    if (!(preco >= 10 && preco <= 10000)) continue
+    todos.push(preco)
+    if (/<td[^>]*>\s*Novo\s*<\/td>/i.test(row)) novos.push(preco)
+  }
+  // usa os "Novo" se houver o suficiente; senão cai para todos os anúncios
+  const base = novos.length >= 3 ? novos : todos
+  if (base.length < 3) return null
+  const m0 = mediana(base)
+  // remove itens muito abaixo da mediana (acessórios, peças avulsas)
+  const limpo = base.filter((v) => v >= m0 * 0.5)
+  return Math.round(mediana(limpo) * 100) / 100
 }
 
 // Retorna os dados do 1º resultado da busca, ou null se não encontrar.

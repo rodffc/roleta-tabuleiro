@@ -28,7 +28,7 @@
       "imageUrl": "capas/hitster.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/hitster",
-      "preco": 185.36
+      "preco": 192.8
     },
     {
       "id": "tapple",
@@ -79,7 +79,7 @@
       "imageUrl": "capas/exploding-kittens.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/exploding-kittens",
-      "preco": 98
+      "preco": 114.57
     },
     {
       "id": "ito",
@@ -133,7 +133,7 @@
       "imageUrl": "capas/that-s-not-a-hat.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/that-s-not-a-hat",
-      "preco": 102.75
+      "preco": 107.5
     },
     {
       "id": "dixit-daydreams",
@@ -267,7 +267,7 @@
       "imageUrl": "capas/the-mind.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/the-mind",
-      "preco": 70.94
+      "preco": 78.99
     },
     {
       "id": "telma",
@@ -348,7 +348,7 @@
       "imageUrl": "capas/harmonies.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/harmonies",
-      "preco": 147.83
+      "preco": 155
     },
     {
       "id": "telestrations",
@@ -374,7 +374,7 @@
       "imageUrl": "capas/telestrations.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/telestrations-passa-o-desenho",
-      "preco": 240.02
+      "preco": 240.49
     },
     {
       "id": "dixit",
@@ -401,7 +401,7 @@
       "imageUrl": "capas/dixit.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/dixit",
-      "preco": 265.68
+      "preco": 268.99
     },
     {
       "id": "dixit-quest",
@@ -454,7 +454,7 @@
       "imageUrl": "capas/mysterium.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/mysterium",
-      "preco": 322.14
+      "preco": 334.54
     },
     {
       "id": "carcassonne",
@@ -481,7 +481,7 @@
       "imageUrl": "capas/carcassonne.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/carcassonne",
-      "preco": 240.4
+      "preco": 262.25
     },
     {
       "id": "ticket-to-ride-europa",
@@ -508,7 +508,7 @@
       "imageUrl": "capas/ticket-to-ride-europa.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/ticket-to-ride-europe",
-      "preco": 416.73
+      "preco": 428.03
     },
     {
       "id": "heat-pedal-to-the-metal",
@@ -535,7 +535,7 @@
       "imageUrl": "capas/heat-pedal-to-the-metal.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/heat-pedal-to-the-metal",
-      "preco": 434.81
+      "preco": 296.55
     },
     {
       "id": "stop-classico-uestop",
@@ -563,7 +563,7 @@
       "imageUrl": "capas/stop-classico-uestop.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/uestop",
-      "preco": 62.99
+      "preco": 67.75
     },
     {
       "id": "imagem-acao-2",
@@ -643,7 +643,7 @@
       "imageUrl": "capas/taco-gato-cabra-queijo-pizza.jpg",
       "bggId": null,
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/taco-cat-goat-cheese-pizza",
-      "preco": 59.9
+      "preco": 60
     },
     {
       "id": "quem-foi",
@@ -697,7 +697,7 @@
       "imageUrl": "capas/fantasy-realms.jpg",
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/fantasy-realms",
       "bggId": null,
-      "preco": 61.11
+      "preco": 76.9
     }
   ],
   "atualizado_em": "2026-05-31T13:10:51.407Z"
