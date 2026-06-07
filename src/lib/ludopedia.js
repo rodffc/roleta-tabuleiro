@@ -5,27 +5,29 @@
 // - No navegador (dev), usa o proxy "/lp" configurado no vite.config.js.
 // - No Node (scripts/testes) usa a URL completa.
 
+import { Capacitor, CapacitorHttp } from '@capacitor/core'
+
 const SITE = 'https://ludopedia.com.br'
 
 function isNative() {
-  return !!(
-    typeof window !== 'undefined' &&
-    window.Capacitor &&
-    typeof window.Capacitor.isNativePlatform === 'function' &&
-    window.Capacitor.isNativePlatform()
-  )
-}
-
-function base() {
-  if (typeof window === 'undefined') return SITE // Node
-  if (isNative()) return SITE // app Android: fetch nativo, sem CORS
-  return '/lp' // navegador: proxy do Vite
+  try {
+    return Capacitor?.isNativePlatform?.() === true
+  } catch {
+    return false
+  }
 }
 
 async function getText(path) {
-  const res = await fetch(base() + path, {
-    headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' },
-  })
+  const headers = { 'Accept-Language': 'pt-BR,pt;q=0.9' }
+  // App Android: requisição nativa direta (sem CORS, sem depender de patch do fetch)
+  if (isNative()) {
+    const res = await CapacitorHttp.get({ url: SITE + path, headers })
+    if (res.status >= 400) throw new Error(`HTTP ${res.status}`)
+    return typeof res.data === 'string' ? res.data : String(res.data ?? '')
+  }
+  // Navegador (dev): proxy "/lp"; Node: URL completa
+  const url = (typeof window === 'undefined' ? SITE : '/lp') + path
+  const res = await fetch(url, { headers })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   return res.text()
 }

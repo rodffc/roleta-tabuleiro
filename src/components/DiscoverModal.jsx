@@ -25,9 +25,16 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
   // carrega as opções dos três filtros (cacheadas na lib)
   useEffect(() => {
     let vivo = true
-    Promise.all(
-      DIMS.map((d) => listarFiltro(d.tipo).then((l) => [d.tipo, l]).catch(() => [d.tipo, []])),
-    ).then((pares) => vivo && setOpcoes(Object.fromEntries(pares)))
+    Promise.all(DIMS.map((d) => listarFiltro(d.tipo).then((l) => [d.tipo, l])))
+      .then((pares) => vivo && setOpcoes(Object.fromEntries(pares)))
+      .catch((e) => {
+        if (vivo)
+          setErro(
+            'Não foi possível carregar os filtros da Ludopedia (' +
+              e.message +
+              '). Verifique a conexão.',
+          )
+      })
     return () => { vivo = false }
   }, [])
 
