@@ -77,19 +77,22 @@ export function markDeleted(id) {
 // adicionados pelo usuário e demais edições.
 export function syncFromSeed(current) {
   const bySeed = Object.fromEntries(seed.jogos.map((g) => [g.id, g]))
-  const merged = current.map((g) =>
-    bySeed[g.id]
-      ? {
-          ...g,
-          imageUrl: bySeed[g.id].imageUrl,
-          ludopediaUrl: bySeed[g.id].ludopediaUrl,
-          nota_ludopedia: bySeed[g.id].nota_ludopedia,
-          rank_ludopedia: bySeed[g.id].rank_ludopedia,
-          // mantém um preço que você editou manualmente; senão usa o do arquivo
-          preco: g.preco != null ? g.preco : bySeed[g.id].preco,
-        }
-      : g,
-  )
+  const merged = current.map((g) => {
+    const s = bySeed[g.id]
+    // só atualiza se for a MESMA versão do arquivo (mesmo link), para não
+    // sobrescrever uma versão diferente que você adicionou com id parecido
+    const mesmaVersao = s && (!g.ludopediaUrl || !s.ludopediaUrl || g.ludopediaUrl === s.ludopediaUrl)
+    if (!mesmaVersao) return g
+    return {
+      ...g,
+      imageUrl: s.imageUrl,
+      ludopediaUrl: s.ludopediaUrl,
+      nota_ludopedia: s.nota_ludopedia,
+      rank_ludopedia: s.rank_ludopedia,
+      // mantém um preço que você editou manualmente; senão usa o do arquivo
+      preco: g.preco != null ? g.preco : s.preco,
+    }
+  })
   // adiciona jogos NOVOS do arquivo, exceto os que você já excluiu
   const idsAtuais = new Set(current.map((g) => g.id))
   const deletados = new Set(read(K_DELETED, []))
@@ -98,6 +101,9 @@ export function syncFromSeed(current) {
   write(K_GAMES, out)
   return out
 }
+
+// ids dos jogos que vêm no arquivo embarcado (para evitar colisão ao adicionar)
+export const idsDoArquivo = () => new Set(seed.jogos.map((g) => g.id))
 
 export const dataInfo = () => ({
   fonte: seed.fonte,
@@ -109,6 +115,17 @@ export function resetGames() {
   write(K_DELETED, [])
   write(K_GAMES, seed.jogos)
   return seed.jogos
+}
+
+// Exclui TODOS os jogos da coleção e marca-os como excluídos (não voltam ao atualizar).
+export function excluirTodaColecao() {
+  const atuais = read(K_GAMES, [])
+  const del = new Set(read(K_DELETED, []))
+  for (const g of atuais) del.add(g.id)
+  for (const g of seed.jogos) del.add(g.id)
+  write(K_DELETED, [...del])
+  write(K_GAMES, [])
+  return []
 }
 
 // ---------- Backup / Restauração ----------

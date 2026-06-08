@@ -19,9 +19,10 @@ import {
   saveHistory,
   loadWishlist,
   saveWishlist,
-  resetGames,
+  excluirTodaColecao,
   syncFromSeed,
   markDeleted,
+  idsDoArquivo,
 } from './lib/storage.js'
 
 const FILTROS_INICIAIS = {
@@ -31,6 +32,7 @@ const FILTROS_INICIAIS = {
   tempoMax: 60,
   idadeMax: 16,
   soFavoritos: false,
+  partidas: 'qualquer', // 'qualquer' | 'nunca' | '1' | '3' | '5'
 }
 
 export default function App() {
@@ -52,6 +54,7 @@ export default function App() {
   const [mostraHist, setMostraHist] = useState(false)
   const [mostraBackup, setMostraBackup] = useState(false)
   const [mostraDescobrir, setMostraDescobrir] = useState(false)
+  const [roletaImgOk, setRoletaImgOk] = useState(true)
 
   useEffect(() => saveGames(games), [games])
   useEffect(() => saveFavs(favs), [favs])
@@ -102,6 +105,12 @@ export default function App() {
         if (g.idade_min != null && g.idade_min > filtros.idadeMax) return false
       }
       if (filtros.soFavoritos && !favs.includes(g.id)) return false
+      if (filtros.partidas !== 'qualquer') {
+        const n = vezesPorJogo[g.id] || 0
+        if (filtros.partidas === 'nunca') {
+          if (n !== 0) return false
+        } else if (n < Number(filtros.partidas)) return false
+      }
       return true
     })
 
@@ -123,7 +132,7 @@ export default function App() {
       }
     })
     return lista
-  }, [listaBase, busca, filtros, ordem, favs])
+  }, [listaBase, busca, filtros, ordem, favs, vezesPorJogo])
 
   const filtrosAtivos =
     filtros.categorias.length > 0 ||
@@ -131,7 +140,8 @@ export default function App() {
     filtros.jogadores > 0 ||
     filtros.tempoMax < 60 ||
     filtros.idadeMax < 16 ||
-    filtros.soFavoritos
+    filtros.soFavoritos ||
+    filtros.partidas !== 'qualquer'
 
   // ---------- Ações ----------
   const toggleFav = (id) =>
@@ -182,12 +192,13 @@ export default function App() {
       setFormGame(undefined)
       return
     }
-    // novo: vai para a lista da aba atual
-    const setLista = aba === 'desejos' ? setWishlist : setGames
-    setLista((lst) => {
-      if (lst.some((g) => g.id === jogo.id)) jogo.id = `${jogo.id}-${Date.now()}`
-      return [...lst, jogo]
-    })
+    // novo: vai para a lista da aba atual, com id que não colide com o arquivo
+    jogo.id = gerarIdUnico(jogo.nome)
+    if (aba === 'desejos') {
+      setWishlist((lst) => [...lst, { ...jogo, dataInclusao: new Date().toISOString() }])
+    } else {
+      setGames((lst) => [...lst, jogo])
+    }
     setFormGame(undefined)
   }
 
@@ -203,20 +214,34 @@ export default function App() {
     return null
   }
 
-  const novoComId = (g, listaExistente) => {
-    let id = slug(g.nome) || `jogo-${Date.now()}`
-    if (listaExistente.some((x) => x.id === id)) id = `${id}-${Date.now()}`
-    return { ...g, id, busca: g.busca || [g.nome.toLowerCase()] }
+  // gera um id que não colide com a coleção, os desejos NEM os jogos do arquivo
+  const gerarIdUnico = (nome) => {
+    const base = slug(nome) || 'jogo'
+    const tomado = new Set([
+      ...games.map((g) => g.id),
+      ...wishlist.map((g) => g.id),
+      ...idsDoArquivo(),
+    ])
+    let id = base
+    let i = 1
+    while (tomado.has(id)) id = `${base}-${++i}`
+    return id
   }
+
+  const novoComId = (g) => ({
+    ...g,
+    id: gerarIdUnico(g.nome),
+    busca: g.busca || [g.nome.toLowerCase()],
+  })
 
   const adicionarDescoberto = (g) => {
     if (ondeEsta(g)) return
-    setGames((gs) => [...gs, novoComId(g, gs)])
+    setGames((gs) => [...gs, novoComId(g)])
   }
 
   const adicionarDesejo = (g) => {
     if (ondeEsta(g)) return
-    setWishlist((w) => [...w, { ...novoComId(g, w), dataInclusao: new Date().toISOString() }])
+    setWishlist((w) => [...w, { ...novoComId(g), dataInclusao: new Date().toISOString() }])
   }
 
   // marca um item da lista de desejos como comprado: sai dos desejos, entra na coleção
@@ -226,9 +251,13 @@ export default function App() {
     setDetailGame(null)
   }
 
-  const restaurar = () => {
-    if (confirm('Restaurar a coleção original do arquivo? Suas inclusões/exclusões locais serão perdidas.')) {
-      setGames(resetGames())
+  const excluirTodos = () => {
+    if (aba === 'desejos') {
+      if (wishlist.length && confirm('Excluir TODOS os jogos da lista de desejos?')) setWishlist([])
+      return
+    }
+    if (games.length && confirm('Excluir TODOS os jogos da sua coleção? Esta ação não pode ser desfeita (use o Backup antes, se quiser).')) {
+      setGames(excluirTodaColecao())
     }
   }
 
@@ -288,11 +317,7 @@ export default function App() {
       <header className="header">
         <div className="header-inner">
           <div className="brand">
-            <img src="/dice.svg" alt="" />
-            <div>
-              Roleta dos jogos
-              <small>minha coleção · estilo Ludopedia</small>
-            </div>
+            <img src="/titulo.png" alt="Roleta dos jogos" className="brand-logo" />
           </div>
           <div className="header-spacer" />
           <div className="search-box">
@@ -391,30 +416,39 @@ export default function App() {
         )}
 
         <footer style={{ textAlign: 'center', color: 'var(--text-soft)', fontSize: '0.8rem', marginTop: 32, paddingBottom: 20 }}>
-          Dados e capas: Ludopedia ·{' '}
-          <button className="icon-btn" onClick={restaurar}>restaurar coleção original</button>
+          <div>
+            Dados e capas: Ludopedia ·{' '}
+            <button className="icon-btn del" onClick={excluirTodos}>
+              {aba === 'desejos' ? 'esvaziar lista de desejos' : 'excluir todos os jogos'}
+            </button>
+          </div>
+          <div style={{ marginTop: 6, fontWeight: 700 }}>App criado por Rodrigo de Campos</div>
         </footer>
       </main>
 
       <nav className="bottom-nav">
         <button onClick={() => setFormGame(null)}>
-          <span className="ico">➕</span>
-          Novo
+          <img src="/adicionar.png" alt="" className="ico ico-img" />
+          Adicionar
         </button>
         <button onClick={() => setMostraDescobrir(true)}>
-          <span className="ico">🔎</span>
-          Descobrir
+          <img src="/buscar.png" alt="" className="ico ico-img" />
+          Buscar
         </button>
         <button className="destaque" onClick={abrirRoleta}>
-          <span className="ico">🎡</span>
+          {roletaImgOk ? (
+            <img src="/roleta.png" alt="" className="ico ico-roleta" onError={() => setRoletaImgOk(false)} />
+          ) : (
+            <span className="ico">🎡</span>
+          )}
           Roleta
         </button>
         <button onClick={() => setMostraHist(true)}>
-          <span className="ico">📜</span>
+          <img src="/historico.png" alt="" className="ico ico-img" />
           Histórico
         </button>
         <button onClick={atualizarDados} disabled={atualizando} title="Atualizar dados e preços dos desejos">
-          <span className="ico">{atualizando ? '⏳' : '🔄'}</span>
+          {atualizando ? <span className="ico">⏳</span> : <img src="/atualizar.png" alt="" className="ico ico-img" />}
           Atualizar
         </button>
       </nav>

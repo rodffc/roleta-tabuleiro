@@ -1,7 +1,7 @@
 {
   "fonte": "Ludopedia (ludopedia.com.br)",
   "consultado_em": "2026-05",
-  "total": 26,
+  "total": 27,
   "jogos": [
     {
       "id": "hitster",
@@ -163,7 +163,7 @@
     },
     {
       "id": "detetive-estrela",
-      "nome": "Detetive (Estrela)",
+      "nome": "Detetive (com Aplicativo)",
       "busca": [
         "detetive",
         "estrela",
@@ -173,21 +173,21 @@
       ],
       "tipo": "Base",
       "estilo": "Dedução / Investigação",
-      "jogadores_min": 2,
-      "jogadores_max": 6,
+      "jogadores_min": 3,
+      "jogadores_max": 8,
       "idade": "8+",
       "idade_min": 8,
-      "tempo_min": 30,
+      "tempo_min": 60,
       "tempo_max": 60,
       "ano": "clássico (Cluedo, 1949)",
       "editora": "Estrela",
-      "nota_ludopedia": 6.4,
-      "rank_ludopedia": 3497,
-      "descricao": "Descubra o culpado, a arma e o local do crime eliminando possibilidades — o 'Clue' brasileiro.",
+      "nota_ludopedia": 6.7,
+      "rank_ludopedia": 2862,
+      "descricao": "\"Em uma cidade, um crime abala a tranquilidade de seus moradores: o milionário Carlos Fortuna foi vítima de assassinato! Todos são suspeitos do crime, inclusive você! Percorra a cidade e colete as provas que apontem (ou inocentem) o assassino, a cena e a arma do crime\". Fonte: Estrela Jogo de dedução lógica, memorização, rolagem de dados e movimento em grade. Pode ser jogado da forma clássica do jogo (como lançado na versão de 1949 sem o app), mas também pode ser jogado com o app em nova modalidade.",
       "imageUrl": "capas/detetive-estrela.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/detetive",
-      "preco": 60
+      "ludopediaUrl": "https://ludopedia.com.br/jogo/detetive-com-aplicativo",
+      "preco": 65
     },
     {
       "id": "jogo-da-vida",
@@ -203,17 +203,17 @@
       "jogadores_max": 6,
       "idade": "8+",
       "idade_min": 8,
-      "tempo_min": 45,
+      "tempo_min": 60,
       "tempo_max": 60,
-      "ano": "1960 (original)",
+      "ano": "1986",
       "editora": "Estrela",
-      "nota_ludopedia": 5.8,
-      "rank_ludopedia": 4874,
-      "descricao": "Percorra a trilha da vida (faculdade, carreira, família) acumulando dinheiro até a aposentadoria.",
+      "nota_ludopedia": 5.2,
+      "rank_ludopedia": 4983,
+      "descricao": "Um empolgante jogo que explora as surpresas e possibilidades da vida. Engloba assuntos variados, como profissões, educação, filhos, negócios, casamento, etc. Jogo onde a sorte é fator determinante.",
       "imageUrl": "capas/jogo-da-vida.jpg",
       "bggId": null,
-      "ludopediaUrl": "https://www.ludopedia.com.br/jogo/super-jogo-da-vida",
-      "preco": null
+      "ludopediaUrl": "https://ludopedia.com.br/jogo/the-game-of-life",
+      "preco": 80
     },
     {
       "id": "trio",
@@ -698,7 +698,34 @@
       "ludopediaUrl": "https://www.ludopedia.com.br/jogo/fantasy-realms",
       "bggId": null,
       "preco": 76.9
+    },
+    {
+      "id": "hamburgueria-maluca",
+      "nome": "Hamburgueria Maluca",
+      "busca": [
+        "hamburgueria maluca",
+        "estrela",
+        "habilidade",
+        "infantil"
+      ],
+      "tipo": "Base",
+      "estilo": "Infantil / Habilidade",
+      "editora": "Estrela",
+      "ano": null,
+      "bggId": null,
+      "idade": "5+",
+      "idade_min": 5,
+      "jogadores_min": 2,
+      "jogadores_max": 6,
+      "tempo_min": 30,
+      "tempo_max": 30,
+      "nota_ludopedia": 5.3,
+      "rank_ludopedia": 4926,
+      "descricao": "Quem será o mais rápido? Apenas quem conseguir todos os ingredientes e fechar seu lanche primeiro ganhará. Monte seu lanche respeitando as quatro categorias de ingredientes e conte com a sorte para completar seu hambúrguer antes dos demais jogadores. Muita coisa pode acontecer e ninguém deixará você completar essa missão tranquilamente. Se divirta nesse delicioso jogo. ************************************************************************** Indicado ao Prêmio Ludopedia Jogo Infantil do Ano (Designer Nacional) 2018 - Voto Popular **************************************************************************",
+      "preco": null,
+      "imageUrl": "capas/hamburgueria-maluca.jpg",
+      "ludopediaUrl": "https://ludopedia.com.br/jogo/hamburgueria-maluca"
     }
   ],
-  "atualizado_em": "2026-05-31T13:10:51.407Z"
+  "atualizado_em": "2026-06-08T10:55:30.351Z"
 }

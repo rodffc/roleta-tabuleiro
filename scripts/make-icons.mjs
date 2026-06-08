@@ -1,13 +1,38 @@
 // Gera os PNGs-fonte do ícone (assets/) a partir de um SVG colorido,
 // depois rode: npx @capacitor/assets generate --android
 import sharp from 'sharp'
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, writeFileSync, existsSync, copyFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const assetsDir = join(__dirname, '..', 'assets')
+const root = join(__dirname, '..')
+const assetsDir = join(root, 'assets')
+const publicDir = join(root, 'public')
 mkdirSync(assetsDir, { recursive: true })
+
+// Se houver uma imagem própria da roleta, usa ela como ícone do app e do rodapé.
+const SRC = join(assetsDir, 'roleta-source.png')
+if (existsSync(SRC)) {
+  const S = 1024
+  const green = { create: { width: S, height: S, channels: 4, background: '#0a7d6e' } }
+  // foreground: a roleta dentro da zona segura (transparente)
+  const fg = await sharp(SRC).resize(900, 900, { fit: 'contain', background: '#00000000' }).toBuffer()
+  await sharp({ create: { width: S, height: S, channels: 4, background: '#00000000' } })
+    .composite([{ input: fg, gravity: 'center' }])
+    .png()
+    .toFile(join(assetsDir, 'icon-foreground.png'))
+  // background verde
+  await sharp(green).png().toFile(join(assetsDir, 'icon-background.png'))
+  // ícone completo (legado): roleta sobre o verde
+  await sharp(green).composite([{ input: fg, gravity: 'center' }]).png().toFile(join(assetsDir, 'icon-only.png'))
+  // ícone do rodapé (alta resolução, fundo transparente)
+  await sharp(SRC).resize(256, 256, { fit: 'contain', background: '#00000000' }).png().toFile(join(publicDir, 'roleta.png'))
+  console.log('Ícones gerados a partir de assets/roleta-source.png')
+  console.log('Agora rode: npx @capacitor/assets generate --android')
+  process.exit(0)
+}
+console.log('(sem assets/roleta-source.png — gerando o ícone padrão por SVG)')
 
 const S = 1024
 const cx = S / 2

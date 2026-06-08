@@ -93,6 +93,27 @@ export default function Filters({ filtros, setFiltros, categorias, onReset }) {
         </div>
 
         <div className="filter-group">
+          <h4>Partidas jogadas</h4>
+          <div className="chips">
+            {[
+              ['qualquer', 'Qualquer'],
+              ['nunca', 'Nunca jogados'],
+              ['1', '1+'],
+              ['3', '3+'],
+              ['5', '5+'],
+            ].map(([v, label]) => (
+              <button
+                key={v}
+                className={'chip' + (filtros.partidas === v ? ' active' : '')}
+                onClick={() => set({ partidas: v })}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="filter-group">
           <h4>Coleção</h4>
           <div className="chips">
             <button

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { slug } from '../lib/helpers.js'
-import { buscarNaLudopedia } from '../lib/ludopedia.js'
+import { slug, imgSrc } from '../lib/helpers.js'
+import { buscarPorNome, dadosPorSlug, precoPorSlug } from '../lib/ludopedia.js'
 
 const vazio = {
   nome: '',
@@ -28,7 +28,9 @@ export default function GameFormModal({ game, onClose, onSave }) {
 
   const [buscando, setBuscando] = useState(false)
   const [statusBusca, setStatusBusca] = useState(null) // {ok, msg}
+  const [candidatos, setCandidatos] = useState(null) // lista p/ seleção
 
+  // 1º passo: busca e mostra a lista de candidatos
   async function buscarLudopedia() {
     const q = f.nome.trim()
     if (!q) {
@@ -37,32 +39,55 @@ export default function GameFormModal({ game, onClose, onSave }) {
     }
     setBuscando(true)
     setStatusBusca(null)
+    setCandidatos(null)
     try {
-      const r = await buscarNaLudopedia(q)
-      if (!r) {
+      const lista = await buscarPorNome(q)
+      if (!lista.length) {
         setStatusBusca({ ok: false, msg: 'Nenhum jogo encontrado na Ludopedia.' })
         return
       }
-      // preenche apenas os campos vazios + sempre atualiza nota/rank/imagem/link
-      setF((s) => ({
-        ...s,
-        nome: r.nome || s.nome,
-        idade: s.idade || r.idade || '',
-        jogadores_min: s.jogadores_min || (r.jogadores_min ?? ''),
-        jogadores_max: s.jogadores_max || (r.jogadores_max ?? ''),
-        tempo_min: s.tempo_min || (r.tempo_min ?? ''),
-        tempo_max: s.tempo_max || (r.tempo_max ?? ''),
-        nota_ludopedia: r.nota_ludopedia ?? s.nota_ludopedia,
-        rank_ludopedia: r.rank_ludopedia ?? s.rank_ludopedia,
-        imageUrl: r.imageUrl || s.imageUrl,
-        ludopediaUrl: r.ludopediaUrl || s.ludopediaUrl,
-      }))
-      setStatusBusca({ ok: true, msg: `Encontrado: ${r.nome} (nota ${r.nota_ludopedia ?? '—'}, rank ${r.rank_ludopedia ?? '—'}).` })
+      setCandidatos(lista)
     } catch (e) {
       setStatusBusca({
         ok: false,
         msg: 'Erro ao buscar (verifique a conexão). No navegador o proxy só funciona em "npm run dev".',
       })
+    } finally {
+      setBuscando(false)
+    }
+  }
+
+  // 2º passo: ao escolher um jogo da lista, busca detalhes e preenche os campos
+  async function escolher(c) {
+    setBuscando(true)
+    setStatusBusca(null)
+    setCandidatos(null)
+    try {
+      const [r, preco] = await Promise.all([
+        dadosPorSlug(c.slug),
+        precoPorSlug(c.slug).catch(() => null),
+      ])
+      setF((s) => ({
+        ...s,
+        nome: r.nome || c.nome || s.nome,
+        idade: r.idade || s.idade || '',
+        jogadores_min: r.jogadores_min ?? s.jogadores_min ?? '',
+        jogadores_max: r.jogadores_max ?? s.jogadores_max ?? '',
+        tempo_min: r.tempo_min ?? s.tempo_min ?? '',
+        tempo_max: r.tempo_max ?? s.tempo_max ?? '',
+        nota_ludopedia: r.nota_ludopedia ?? s.nota_ludopedia ?? '',
+        rank_ludopedia: r.rank_ludopedia ?? s.rank_ludopedia ?? '',
+        descricao: r.descricao || s.descricao || '',
+        preco: preco ?? s.preco ?? '',
+        imageUrl: r.imageUrl || c.imageUrl || s.imageUrl,
+        ludopediaUrl: r.ludopediaUrl || c.ludopediaUrl || s.ludopediaUrl,
+      }))
+      setStatusBusca({
+        ok: true,
+        msg: `Preenchido com "${r.nome}" (nota ${r.nota_ludopedia ?? '—'}, rank ${r.rank_ludopedia ?? '—'}).`,
+      })
+    } catch (e) {
+      setStatusBusca({ ok: false, msg: 'Erro ao carregar os dados do jogo.' })
     } finally {
       setBuscando(false)
     }
@@ -136,6 +161,24 @@ export default function GameFormModal({ game, onClose, onSave }) {
                 <small className={statusBusca.ok ? 'busca-ok' : 'busca-erro'}>
                   {statusBusca.msg}
                 </small>
+              )}
+              {candidatos && (
+                <div className="cand-box">
+                  <div className="cand-head">
+                    Selecione o jogo:
+                    <button type="button" className="icon-btn" onClick={() => setCandidatos(null)}>✕</button>
+                  </div>
+                  {candidatos.map((c) => (
+                    <button type="button" className="cand-item" key={c.slug} onClick={() => escolher(c)}>
+                      {imgSrc(c.imageUrl) ? (
+                        <img src={imgSrc(c.imageUrl)} alt="" loading="lazy" />
+                      ) : (
+                        <span className="cand-ph">🎲</span>
+                      )}
+                      <span>{c.nome}</span>
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
             <div className="form-row">
