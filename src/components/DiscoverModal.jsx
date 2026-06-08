@@ -122,19 +122,26 @@ export default function DiscoverModal({ ondeEsta, onAddColecao, onAddDesejo, onC
 
           <div className="form-row">
             <label>Nome do jogo</label>
-            <div className="busca-row">
+            <form
+              className="busca-row"
+              onSubmit={(e) => {
+                e.preventDefault()
+                buscar()
+              }}
+            >
               <input
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
                 placeholder="ex: Wingspan, Catan…"
-                onKeyDown={(e) => e.key === 'Enter' && buscar()}
+                enterKeyHint="search"
               />
               {nome && (
-                <button className="btn btn-outline btn-sm" onClick={() => setNome('')} title="Limpar nome">
+                <button type="button" className="btn btn-outline btn-sm" onClick={() => setNome('')} title="Limpar nome">
                   ✕
                 </button>
               )}
-            </div>
+              <button type="submit" style={{ display: 'none' }} aria-hidden="true" />
+            </form>
             <small style={{ color: 'var(--text-soft)' }}>
               Se preencher o nome, a busca usa o nome (ignora os filtros abaixo).
             </small>

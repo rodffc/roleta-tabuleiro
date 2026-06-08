@@ -130,33 +130,29 @@ export default function GameFormModal({ game, onClose, onSave }) {
           <h3>{editando ? 'Editar jogo' : 'Adicionar jogo'}</h3>
           <button className="x" onClick={onClose}>×</button>
         </div>
-        <form onSubmit={submit}>
+        <>
           <div className="modal-body">
             <div className="form-row">
               <label>Nome *</label>
-              <div className="busca-row">
+              <form
+                className="busca-row"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  buscarLudopedia()
+                }}
+              >
                 <input
                   value={f.nome}
                   onChange={set('nome')}
                   autoFocus
                   required
                   placeholder="Ex: Wingspan"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      buscarLudopedia()
-                    }
-                  }}
+                  enterKeyHint="search"
                 />
-                <button
-                  type="button"
-                  className="btn btn-green btn-sm"
-                  onClick={buscarLudopedia}
-                  disabled={buscando}
-                >
+                <button className="btn btn-green btn-sm" type="submit" disabled={buscando}>
                   {buscando ? '⏳…' : '🔎 Ludopedia'}
                 </button>
-              </div>
+              </form>
               {statusBusca && (
                 <small className={statusBusca.ok ? 'busca-ok' : 'busca-erro'}>
                   {statusBusca.msg}
@@ -262,11 +258,11 @@ export default function GameFormModal({ game, onClose, onSave }) {
             <button type="button" className="btn btn-outline" onClick={onClose}>
               Cancelar
             </button>
-            <button type="submit" className="btn btn-green">
+            <button type="button" className="btn btn-green" onClick={submit}>
               {editando ? 'Salvar' : 'Adicionar'}
             </button>
           </div>
-        </form>
+        </>
       </div>
     </div>
   )
