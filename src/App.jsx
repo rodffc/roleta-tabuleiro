@@ -317,9 +317,9 @@ export default function App() {
       <header className="header">
         <div className="header-inner">
           <div className="brand">
-            <img src="/titulo.png" alt="Roleta dos jogos" className="brand-logo" />
+            <img src="/roleta.png" alt="" className="brand-logo" />
+            <span className="brand-name">Roleta dos Jogos</span>
           </div>
-          <div className="header-spacer" />
           <div className="search-box">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="7" />
@@ -422,7 +422,7 @@ export default function App() {
               {aba === 'desejos' ? 'esvaziar lista de desejos' : 'excluir todos os jogos'}
             </button>
           </div>
-          <div style={{ marginTop: 6, fontWeight: 700 }}>App criado por Rodrigo de Campos</div>
+          <div style={{ marginTop: 6, fontWeight: 700 }}>Feito com ☕ por Rodrigo de Campos</div>
         </footer>
       </main>
 
