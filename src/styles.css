@@ -548,6 +548,42 @@ select {
   padding: 2px 7px;
   border-radius: 8px;
 }
+.hist-stars {
+  color: var(--orange);
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+}
+.hist-stars .off {
+  color: var(--border);
+}
+
+/* avaliação por estrelas (registrar partida) */
+.star-rate {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.star-rate .star {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 0 2px;
+  color: var(--border);
+  transition: color 0.1s ease, transform 0.08s ease;
+}
+.star-rate .star.on {
+  color: var(--orange);
+}
+.star-rate .star:active {
+  transform: scale(0.85);
+}
+.star-rate .star-val {
+  margin-left: 10px;
+  font-weight: 800;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
 
 /* ---------- Modal ---------- */
 .overlay {

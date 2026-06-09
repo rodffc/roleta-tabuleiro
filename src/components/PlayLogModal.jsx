@@ -4,6 +4,8 @@ import { formatJogadores } from '../lib/helpers.js'
 export default function PlayLogModal({ game, onClose, onConfirm }) {
   const sugestao = game.jogadores_min || 2
   const [qtd, setQtd] = useState(sugestao)
+  const [nota, setNota] = useState(0) // avaliação 0-5
+  const [hover, setHover] = useState(0)
 
   const min = game.jogadores_min || 1
   const max = game.jogadores_max || 16
@@ -11,7 +13,7 @@ export default function PlayLogModal({ game, onClose, onConfirm }) {
   for (let n = min; n <= Math.min(max, 16); n++) opcoes.push(n)
 
   function confirmar() {
-    onConfirm(game, Number(qtd))
+    onConfirm(game, Number(qtd), nota || null)
   }
 
   return (
@@ -49,6 +51,25 @@ export default function PlayLogModal({ game, onClose, onConfirm }) {
               value={qtd}
               onChange={(e) => setQtd(e.target.value)}
             />
+          </div>
+
+          <div className="form-row">
+            <label>Sua avaliação (opcional)</label>
+            <div className="star-rate" onMouseLeave={() => setHover(0)}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  className={'star' + ((hover || nota) >= n ? ' on' : '')}
+                  onMouseEnter={() => setHover(n)}
+                  onClick={() => setNota(nota === n ? 0 : n)}
+                  aria-label={`${n} estrela(s)`}
+                >
+                  ★
+                </button>
+              ))}
+              <span className="star-val">{nota ? `${nota}/5` : '—'}</span>
+            </div>
           </div>
         </div>
         <div className="modal-foot">

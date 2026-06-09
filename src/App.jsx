@@ -152,10 +152,10 @@ export default function App() {
     setDetailGame(null)
     setPlayGame(game)
   }
-  const confirmarPartida = (game, players) => {
+  const confirmarPartida = (game, players, nota) => {
     setHistory((h) => [
       ...h,
-      { gameId: game.id, nome: game.nome, players, date: new Date().toISOString() },
+      { gameId: game.id, nome: game.nome, players, nota: nota || null, date: new Date().toISOString() },
     ])
     setPlayGame(null)
   }

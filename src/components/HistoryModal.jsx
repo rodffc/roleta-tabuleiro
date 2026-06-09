@@ -37,6 +37,12 @@ export default function HistoryModal({ history, games, onClose, onClear }) {
                       👥 {h.players}
                     </span>
                   ) : null}
+                  {h.nota ? (
+                    <span className="hist-stars" title={`Sua avaliação: ${h.nota}/5`}>
+                      {'★'.repeat(h.nota)}
+                      <span className="off">{'★'.repeat(5 - h.nota)}</span>
+                    </span>
+                  ) : null}
                   <span className="when">{formatData(h.date)}</span>
                 </div>
               ))}
